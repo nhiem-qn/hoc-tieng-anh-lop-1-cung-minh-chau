@@ -3,8 +3,9 @@
 Ứng dụng học tiếng Anh cho bé lớp 1, bám sát SGK **Tiếng Anh 1 – Global Success** (Bộ GD&ĐT):
 16 Unit theo đúng thứ tự sách, xen 4 Fun time và 4 Review, thẻ từ (hình + phiên âm + nghĩa),
 giọng cô ghi sẵn (209 file MP3), chấm điểm phát âm 0–100, trò chơi theo từng bài,
-**Game Khám Phá 3D** (4 map: Thành phố, Đồng quê, Bãi biển, Sở thú) và
-**Thử thách trí tuệ** cuối mỗi Unit kèm thẻ "Con có biết?" với từ mở rộng ngoài SGK.
+**Game Khám Phá 3D** (4 map: Thành phố, Đồng quê, Bãi biển, Sở thú — nhiệm vụ nói tiếng Việt,
+bảng hiệu tiếng Anh gắn với từng vật, các cách chơi: đi theo dấu chân, tìm bạn sinh đôi, bỏ vào giỏ…)
+và **Thử thách trí tuệ** cuối mỗi Unit kèm thẻ "Con có biết?" với từ mở rộng ngoài SGK.
 
 ## Cách dựng lại / sửa tiếp bằng bất kỳ tài khoản Muse nào
 
@@ -12,8 +13,8 @@ Cách đơn giản và đầy đủ nhất — dùng gói mã nguồn **`GOI-MA-
 của repo này. Vì giới hạn dung lượng mỗi lần đẩy của kết nối GitHub, gói được
 chia thành 5 phần: `GOI-MA-NGUON.part01.txt` … `GOI-MA-NGUON.part05.txt`.
 Ghép 5 phần theo đúng thứ tự (nối liền nhau, không thêm/bớt ký tự) sẽ được file
-`GOI-MA-NGUON.txt` hoàn chỉnh — 6.198.096 byte, SHA-256:
-`0269daa5e34921c93d172f692c0dc20ea79da2071b9b8106e5b9561ac4af81e0`.
+`GOI-MA-NGUON.txt` hoàn chỉnh — 6.235.195 byte, SHA-256:
+`23f30d4ffb96cb1f8e3fc4310d694af4a7a11598443c94892d5d9eda83a33687`.
 
 1. Mở Muse bằng tài khoản của bạn, tải cả 5 file part lên cuộc trò chuyện
    (hoặc gửi link repo này).
