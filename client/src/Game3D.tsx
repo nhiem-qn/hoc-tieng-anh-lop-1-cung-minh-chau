@@ -38,6 +38,26 @@
 //   hat, cake ở khu công viên/cửa hàng), đồng quê +3 vật (lemon,
 //   frog, grape ở vườn cây/ao lớn) → Sổ Khám Phá 13/14 bạn mỗi map,
 //   dữ liệu đã lưu theo khóa cũ không đổi nên không mất.
+//
+// NÂNG CẤP ĐỢT 6 (yêu cầu của người dùng):
+// - Nhiệm vụ NÓI TIẾNG VIỆT LÀ CHÍNH: panel hiện câu tiếng Việt chữ
+//   lớn, cô đọc lệnh bằng tiếng Việt (TTS vi-VN; nghe-và-tìm vẫn đọc
+//   thêm câu tiếng Anh vì đó là nội dung nghe). Tên tiếng Anh của vật
+//   cần tìm CHỈ hiện thành dòng gợi ý nhỏ sau ~20 giây (gợi ý cấp 2)
+//   hoặc trong thẻ từ sau khi tìm đúng — lúc đó bé mới học từ Anh.
+// - BẢNG HIỆU TIẾNG ANH: MỖI vật/con vật ở cả 4 map có một bảng hiệu
+//   vẽ bằng canvas texture đặt ngay cạnh vật, quay về phía trung tâm
+//   (lối tiếp cận chính), ghi tên tiếng Anh chữ lớn; kiểu bảng theo
+//   map (đường phố ở Thành phố, gỗ ở Đồng quê/Bãi biển, biển chuồng
+//   thú 2 cột ở Sở thú). Tìm đúng → bảng hiệu nảy ăn mừng cùng vật.
+// - 3 DẠNG NHIỆM VỤ MỚI trộn vào 7 nhiệm vụ/lượt (mỗi lượt có ít
+//   nhất 1 dạng mới): 👣 Đi theo dấu chân (vệt dấu chân phát sáng
+//   hiện dần theo bước đi, TẮT mũi tên chỉ đường), 👯 Tìm bạn sinh
+//   đôi (một bản sao tạm xuất hiện thêm, phải bấm cả hai bạn), 🧺 Bỏ
+//   vào giỏ (giỏ cố định gần điểm xuất phát; theo màu — có bản sao
+//   tạm cùng màu để đủ số lượng — hoặc theo loại; vật đúng bay theo
+//   đường cong vào giỏ, hết nhiệm vụ vật trở về chỗ cũ). Sai không
+//   trừ sao; vật tìm được ở dạng mới vẫn ghi Sổ Khám Phá như thường.
 // ============================================================
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -296,6 +316,8 @@ const PRAISE_TEXTS = [
 ];
 const MISSIONS_PER_ROUND = 7; // Đợt 4: mỗi lượt 7 nhiệm vụ
 const WORLD_BOUND = 38; // Đợt 3: map rộng ~2.5 lần diện tích (bán kính đi được 24 → 38)
+/** Đợt 6: chiếc giỏ của nhiệm vụ "Bỏ vào giỏ" — cố định gần điểm xuất phát (bé bắt đầu ở 0, 9). */
+export const BASKET_POS = { x: -2.8, z: 11.5 };
 /** Quá thời gian này chưa tìm được → vật cần tìm tự phát sáng nhấp nháy gợi ý. */
 const HINT_AFTER_MS = 20000;
 
@@ -518,12 +540,19 @@ export function riddleFor(def: WorldObjectDef): string {
   return RIDDLE_VI[def.id] ?? `Bạn này là một bạn trong nơi này: ${def.vi}. Con đoán xem là bạn nào?`;
 }
 
-// ---------- Nhiệm vụ: các dạng pha trộn mỗi lượt (đợt 5 thêm Câu đố) ----------
+// ---------- Nhiệm vụ: các dạng pha trộn mỗi lượt (đợt 5 thêm Câu đố, đợt 6 thêm 3 dạng mới) ----------
 export type Mission =
   | { kind: "find"; def: WorldObjectDef }
   | { kind: "listen"; def: WorldObjectDef }
   | { kind: "hide"; def: WorldObjectDef }
   | { kind: "riddle"; def: WorldObjectDef; riddleVi: string }
+  /** Đợt 6: 👣 Đi theo dấu chân phát sáng tới vật — không có mũi tên chỉ đường. */
+  | { kind: "trail"; def: WorldObjectDef }
+  /** Đợt 6: 👯 Tìm bạn sinh đôi — twinDef là bản sao tạm ở vị trí khác, phải bấm cả hai. */
+  | { kind: "twin"; def: WorldObjectDef; twinDef: WorldObjectDef }
+  /** Đợt 6: 🧺 Bỏ vào giỏ — theo màu (spawnDefs là bản sao tạm cùng màu) hoặc theo loại. */
+  | { kind: "basket"; mode: "color"; colorId: ColorId; need: number; sample: WorldObjectDef; spawnDefs: WorldObjectDef[] }
+  | { kind: "basket"; mode: "group"; baseId: string; need: number; sample: WorldObjectDef; spawnDefs: WorldObjectDef[] }
   | { kind: "color"; baseId: string; colorId: ColorId; sample: WorldObjectDef; targetDef: WorldObjectDef }
   | { kind: "count"; baseId: string; need: number; sample: WorldObjectDef };
 
@@ -545,6 +574,58 @@ export function allDefs(m: MapDef): WorldObjectDef[] {
 
 function plural(en: string): string {
   return `${en}s`;
+}
+
+/**
+ * Đợt 6: vị trí rải rác cho BẢN SAO TẠM (bạn sinh đôi / vật cùng màu bỏ giỏ):
+ * cách vật gốc một đoạn, không chồng lên vật khác / giỏ / điểm xuất phát,
+ * vẫn trong biên map. Bản sao chỉ sống trong thời gian nhiệm vụ đó diễn ra.
+ */
+function scatterPos(
+  m: MapDef, src: WorldObjectDef, extra: { x: number; z: number }[],
+): { x: number; z: number } {
+  const clampB = (v: number) => Math.max(-33, Math.min(33, v));
+  const taken = [
+    ...allDefs(m).map((d) => ({ x: d.x, z: d.z })),
+    ...extra,
+    { x: BASKET_POS.x, z: BASKET_POS.z },
+    { x: 0, z: 9 },
+  ];
+  for (let i = 0; i < 14; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const dist = 10 + Math.random() * 10;
+    const x = clampB(src.x + Math.cos(ang) * dist);
+    const z = clampB(src.z + Math.sin(ang) * dist);
+    if (taken.every((t) => Math.hypot(t.x - x, t.z - z) >= 4)) return { x, z };
+  }
+  return { x: clampB(src.x + 12), z: clampB(src.z - 12) };
+}
+
+/** Đợt 6: dựng nhiệm vụ "Bỏ vào giỏ" theo dữ liệu sẵn có của map. */
+function buildBasketMission(m: MapDef): Mission | null {
+  const colorDefs = allDefs(m).filter((d) => groupOf(d) === m.colorBaseId && d.colorId);
+  const groupMembers = allDefs(m).filter((d) => groupOf(d) === m.countBaseId);
+  // Theo MÀU: mỗi màu trong map chỉ có sẵn 1 vật, nên sinh thêm bản sao tạm
+  // cùng màu rải rác quanh map để đủ số lượng bỏ giỏ (hết nhiệm vụ là biến mất).
+  if (colorDefs.length > 0 && (groupMembers.length < 3 || Math.random() < 0.5)) {
+    const src = colorDefs[Math.floor(Math.random() * colorDefs.length)]!;
+    const need = 2 + Math.floor(Math.random() * 2); // 2–3 vật
+    const placed: { x: number; z: number }[] = [];
+    const spawnDefs: WorldObjectDef[] = [];
+    for (let i = 0; i < need - 1; i++) {
+      const p = scatterPos(m, src, placed);
+      placed.push(p);
+      spawnDefs.push({ ...src, x: p.x, z: p.z });
+    }
+    return {
+      kind: "basket", mode: "color", colorId: src.colorId!, need, sample: src, spawnDefs,
+    };
+  }
+  // Theo LOẠI: bỏ N bạn cùng nhóm (nhóm đếm số của map luôn có 5 bạn).
+  const sample = m.objects.find((d) => d.id === m.countBaseId) ?? groupMembers[0];
+  if (!sample || groupMembers.length < 2) return null;
+  const need = Math.min(groupMembers.length, 2 + Math.floor(Math.random() * 2));
+  return { kind: "basket", mode: "group", baseId: m.countBaseId, need, sample, spawnDefs: [] };
 }
 
 /** Dựng 1 lượt 7 nhiệm vụ: 2 tìm vật + 1 màu + 1 đếm + 1 nghe-tìm + 1 tìm bạn trốn + 1 câu đố, xáo trộn. */
@@ -582,23 +663,62 @@ export function buildRound(m: MapDef): Mission[] {
 
   // Dự phòng: nếu thiếu nhiệm vụ màu/đếm thì bù bằng nhiệm vụ tìm vật.
   const used = new Set(
-    missions.map((x) => (x.kind === "color" || x.kind === "count" ? x.sample : x.def)),
+    missions.map((x) =>
+      x.kind === "color" || x.kind === "count" || x.kind === "basket" ? x.sample : x.def,
+    ),
   );
   for (const def of shuffle(m.objects)) {
     if (missions.length >= MISSIONS_PER_ROUND) break;
     if (!used.has(def)) missions.push({ kind: "find", def });
   }
-  return shuffle(missions).slice(0, MISSIONS_PER_ROUND);
+
+  // ĐỢT 6: 3 dạng chơi mới — mỗi lượt CHẮC CHẮN có ít nhất 1 dạng mới
+  // (thường là 1–2): thay ngẫu nhiên vài nhiệm vụ lõi bằng dạng mới.
+  const newKinds: Mission[] = [];
+  const trailDef = pool[5];
+  if (trailDef) newKinds.push({ kind: "trail", def: trailDef });
+  const twinSrc = pool[6];
+  if (twinSrc) {
+    const p = scatterPos(m, twinSrc, []);
+    newKinds.push({ kind: "twin", def: twinSrc, twinDef: { ...twinSrc, x: p.x, z: p.z } });
+  }
+  const basket = buildBasketMission(m);
+  if (basket) newKinds.push(basket);
+  const round = shuffle(missions).slice(0, MISSIONS_PER_ROUND);
+  const shuffledNew = shuffle(newKinds);
+  const swaps = Math.min(
+    shuffledNew.length,
+    Math.max(0, round.length - 1),
+    Math.random() < 0.55 ? 2 : 1,
+  );
+  const swapIdx = new Set<number>();
+  while (swapIdx.size < swaps) {
+    swapIdx.add(Math.floor(Math.random() * round.length));
+  }
+  let si = 0;
+  for (const idx of swapIdx) {
+    round[idx] = shuffledNew[si++]!;
+  }
+  if (round.length < MISSIONS_PER_ROUND && shuffledNew[si]) {
+    round.push(shuffledNew[si]!);
+  }
+  return shuffle(round);
 }
 
-/** Tiêu đề nhiệm vụ để hiển thị + đọc cho bé nghe. */
+/**
+ * Tiêu đề nhiệm vụ để hiển thị + đọc cho bé nghe.
+ * ĐỢT 6: tiếng Việt là nội dung CHÍNH (viTitle chữ lớn trên panel, cô đọc
+ * lệnh bằng tiếng Việt). Tên tiếng Anh của vật cần tìm KHÔNG hiện sẵn —
+ * chỉ có trong `enHint`, panel hiện nó thành dòng nhỏ khi gợi ý cấp 2 bật
+ * (sau ~20 giây), hoặc bé học nó qua bảng hiệu/thẻ từ khi tìm đúng.
+ */
 export function missionText(mis: Mission): {
-  enTitle: string; viTitle: string; emoji: string; speakVi: string; speakEn: string;
+  viTitle: string; enHint: string; emoji: string; speakVi: string; speakEn: string;
 } {
   if (mis.kind === "find") {
     return {
-      enTitle: `Find the ${mis.def.en}!`,
-      viTitle: `Hãy tìm và bấm vào: ${mis.def.vi}`,
+      viTitle: `Hãy tìm ${mis.def.vi}!`,
+      enHint: `Find the ${mis.def.en}!`,
       emoji: mis.def.emoji,
       speakVi: `Nhiệm vụ mới! Con hãy tìm và bấm vào ${mis.def.vi} nhé!`,
       speakEn: `Find the ${mis.def.en}!`,
@@ -607,8 +727,8 @@ export function missionText(mis: Mission): {
   if (mis.kind === "listen") {
     // Nghe và tìm: panel KHÔNG ghi tên vật — bé phải nghe cô đọc tiếng Anh.
     return {
-      enTitle: "Listen and find! 👂",
       viTitle: "Nghe cô đọc rồi tìm bạn đó nhé!",
+      enHint: `Find the ${mis.def.en}!`,
       emoji: "👂",
       speakVi: "Nhiệm vụ mới! Con nghe cô đọc tiếng Anh rồi tìm bạn đó nhé!",
       speakEn: `Find the ${mis.def.en}!`,
@@ -617,8 +737,8 @@ export function missionText(mis: Mission): {
   if (mis.kind === "hide") {
     // Tìm bạn đang trốn: không lộ danh tính trên panel.
     return {
-      enTitle: "Find the hiding friend! 🫣",
       viTitle: "Có một bạn đang trốn — tìm bạn ấy nhé!",
+      enHint: "",
       emoji: "🫣",
       speakVi: "Nhiệm vụ mới! Có một bạn đang trốn trong này, con tìm bạn ấy nhé!",
       speakEn: "Find the hiding friend!",
@@ -627,28 +747,68 @@ export function missionText(mis: Mission): {
   if (mis.kind === "riddle") {
     // Câu đố của cô: panel chỉ hiện ❓, đáp án chỉ có trong lời đọc tiếng Việt.
     return {
-      enTitle: "Riddle time! 🤔",
       viTitle: "Câu đố của cô — nghe kỹ rồi đoán nhé!",
+      enHint: "",
       emoji: "❓",
       speakVi: `Câu đố của cô! ${mis.riddleVi}`,
       speakEn: "Can you guess who I am?",
     };
   }
+  if (mis.kind === "trail") {
+    // 👣 Đi theo dấu chân: panel nói rõ vật bằng tiếng Việt, dấu chân dẫn đường.
+    return {
+      viTitle: `Đi theo dấu chân, tìm ${mis.def.vi} nào!`,
+      enHint: `Find the ${mis.def.en}!`,
+      emoji: "👣",
+      speakVi: `Nhiệm vụ mới! Con hãy đi theo dấu chân phát sáng trên mặt đất để tìm ${mis.def.vi} nhé!`,
+      speakEn: `Follow the footprints and find the ${mis.def.en}!`,
+    };
+  }
+  if (mis.kind === "twin") {
+    // 👯 Tìm bạn sinh đôi: phải bấm vào CẢ HAI bạn giống hệt nhau.
+    return {
+      viTitle: `Tìm cả hai bạn ${mis.def.vi} sinh đôi nhé!`,
+      enHint: `Find two ${plural(mis.def.en)}!`,
+      emoji: "👯",
+      speakVi: `Nhiệm vụ mới! Trong này có hai bạn ${mis.def.vi} sinh đôi giống hệt nhau. Con hãy tìm và bấm vào cả hai bạn nhé!`,
+      speakEn: `Find both twin ${plural(mis.def.en)}!`,
+    };
+  }
+  if (mis.kind === "basket") {
+    // 🧺 Bỏ vào giỏ: lệnh tiếng Việt theo tiêu chí màu hoặc loại.
+    if (mis.mode === "color") {
+      const c = COLORS[mis.colorId];
+      return {
+        viTitle: `Hãy bỏ ${mis.need} ${mis.sample.vi} màu ${c.vi} vào giỏ!`,
+        enHint: `Put ${mis.need} ${c.en} ${plural(mis.sample.en)} in the basket!`,
+        emoji: "🧺",
+        speakVi: `Nhiệm vụ mới! Con hãy bỏ ${mis.need} ${mis.sample.vi} màu ${c.vi} vào chiếc giỏ ở gần chỗ bắt đầu nhé!`,
+        speakEn: `Put ${mis.need} ${c.en} ${plural(mis.sample.en)} in the basket!`,
+      };
+    }
+    return {
+      viTitle: `Hãy bỏ ${mis.need} ${mis.sample.vi} vào giỏ!`,
+      enHint: `Put ${mis.need} ${plural(mis.sample.en)} in the basket!`,
+      emoji: "🧺",
+      speakVi: `Nhiệm vụ mới! Con hãy bỏ ${mis.need} ${mis.sample.vi} vào chiếc giỏ ở gần chỗ bắt đầu nhé!`,
+      speakEn: `Put ${mis.need} ${plural(mis.sample.en)} in the basket!`,
+    };
+  }
   if (mis.kind === "color") {
     const c = COLORS[mis.colorId];
     return {
-      enTitle: `Find the ${c.en} ${mis.sample.en}!`,
       viTitle: `Hãy tìm ${mis.sample.vi} màu ${c.vi}!`,
+      enHint: `Find the ${c.en} ${mis.sample.en}!`,
       emoji: mis.sample.emoji,
       speakVi: `Nhiệm vụ mới! Con hãy tìm ${mis.sample.vi} màu ${c.vi} nhé!`,
       speakEn: `Find the ${c.en} ${mis.sample.en}!`,
     };
   }
   return {
-    enTitle: `How many ${plural(mis.sample.en)}? Tap ${mis.need} ${plural(mis.sample.en)}!`,
-    viTitle: `Hãy bấm vào ${mis.need} ${mis.sample.vi} nhé!`,
+    viTitle: `Hãy chạm ${mis.need} ${mis.sample.vi} nhé!`,
+    enHint: `Tap ${mis.need} ${plural(mis.sample.en)}!`,
     emoji: mis.sample.emoji,
-    speakVi: `Nhiệm vụ mới! Con hãy bấm vào ${mis.need} ${mis.sample.vi} nhé!`,
+    speakVi: `Nhiệm vụ mới! Con hãy chạm vào ${mis.need} ${mis.sample.vi} nhé!`,
     speakEn: `How many ${plural(mis.sample.en)}? Tap ${mis.need} ${plural(mis.sample.en)}!`,
   };
 }
@@ -657,7 +817,24 @@ export function missionText(mis: Mission): {
 export function missionTargetDef(
   mis: Mission, counted: ReadonlySet<string>, m: MapDef,
 ): WorldObjectDef | null {
-  if (mis.kind === "find" || mis.kind === "listen" || mis.kind === "hide" || mis.kind === "riddle") return mis.def;
+  if (
+    mis.kind === "find" || mis.kind === "listen" || mis.kind === "hide" ||
+    mis.kind === "riddle" || mis.kind === "trail"
+  ) return mis.def;
+  if (mis.kind === "twin") {
+    // Dẫn tới bạn sinh đôi CHƯA được bấm (counted = tập khóa đã tìm của nhiệm vụ này).
+    if (counted.has(instKey(mis.def)) && !counted.has(instKey(mis.twinDef))) return mis.twinDef;
+    return mis.def;
+  }
+  if (mis.kind === "basket") {
+    const all = [...allDefs(m), ...mis.spawnDefs];
+    if (mis.mode === "color") {
+      const cid = mis.colorId;
+      return all.find((d) => d.colorId === cid && !counted.has(instKey(d))) ?? null;
+    }
+    const baseId = mis.baseId;
+    return all.find((d) => groupOf(d) === baseId && !counted.has(instKey(d))) ?? null;
+  }
   if (mis.kind === "color") return mis.targetDef;
   return (
     allDefs(m).find((d) => groupOf(d) === mis.baseId && !counted.has(instKey(d))) ?? null
@@ -1763,6 +1940,117 @@ function buildFor(def: WorldObjectDef): THREE.Group | null {
   return b ? b() : null;
 }
 
+// ---------- ĐỢT 6: BẢNG HIỆU TIẾNG ANH cho từng vật/con vật ----------
+/** Phong cách bảng theo nơi: đường phố (Thành phố) / gỗ (Đồng quê, Bãi biển) / biển chuồng thú (Sở thú). */
+const SIGN_STYLES: Record<MapId, { bg: string; border: string; text: string; post: number; back: number }> = {
+  city: { bg: "#ffffff", border: "#3d7bff", text: "#274b8f", post: 0x8a8f98, back: 0xdfe7f2 },
+  countryside: { bg: "#fdf3d0", border: "#8a5a2b", text: "#6b4218", post: 0x8a5a2b, back: 0xa9743f },
+  beach: { bg: "#ffffff", border: "#0e9594", text: "#0b6e6d", post: 0xb08968, back: 0xd9b48c },
+  zoo: { bg: "#f4f9e4", border: "#3fa34d", text: "#27632f", post: 0x6f9e4f, back: 0x8a5a2b },
+};
+/** Vật to (voi, ngựa, xe lớn, cây…) → bảng hiệu đặt xa hơn và to hơn một chút. */
+const BIG_SIGN_IDS = new Set([
+  "elephant", "horse", "bus", "truck", "boat", "tree", "lion", "tiger", "zebra", "goat",
+]);
+
+/** Vẽ chữ tên tiếng Anh lên canvas: chữ Baloo thật lớn, tự co cỡ cho vừa bảng. */
+function makeSignTexture(word: string, mapId: MapId): THREE.CanvasTexture {
+  const st = SIGN_STYLES[mapId];
+  const c = document.createElement("canvas");
+  c.width = 512; c.height = 256;
+  const g = c.getContext("2d")!;
+  g.beginPath();
+  g.roundRect(10, 10, 492, 236, 38);
+  g.fillStyle = st.bg;
+  g.fill();
+  g.lineWidth = 14;
+  g.strokeStyle = st.border;
+  g.stroke();
+  g.fillStyle = st.text;
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  let size = 132;
+  g.font = `800 ${size}px 'Baloo 2', 'Nunito', sans-serif`;
+  while (g.measureText(word).width > 436 && size > 42) {
+    size -= 10;
+    g.font = `800 ${size}px 'Baloo 2', 'Nunito', sans-serif`;
+  }
+  g.fillText(word, 256, 136);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  return tex;
+}
+
+/** Một bảng hiệu đứng: mặt trước + mặt sau cùng đọc được, cột theo phong cách map. */
+function buildSign(mapId: MapId, tex: THREE.CanvasTexture): THREE.Group {
+  const st = SIGN_STYLES[mapId];
+  const grp = new THREE.Group();
+  const boardMat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55 });
+  const back = new THREE.Mesh(new THREE.BoxGeometry(2.06, 1.06, 0.07), mat(st.back));
+  back.position.y = 1.66;
+  back.castShadow = true;
+  grp.add(back);
+  const front = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 1.0), boardMat);
+  front.position.set(0, 1.66, 0.045);
+  grp.add(front);
+  const backFace = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 1.0), boardMat);
+  backFace.position.set(0, 1.66, -0.045);
+  backFace.rotation.y = Math.PI;
+  grp.add(backFace);
+  const postGeo = new THREE.CylinderGeometry(0.07, 0.09, 1.2, 10);
+  if (mapId === "zoo") {
+    // Biển chuồng thú: hai cột hai bên như bảng gắn trên hàng rào chuồng.
+    for (const px of [-0.88, 0.88]) {
+      const post = new THREE.Mesh(postGeo, mat(st.post));
+      post.position.set(px, 0.6, 0);
+      post.castShadow = true;
+      grp.add(post);
+    }
+  } else {
+    const post = new THREE.Mesh(postGeo, mat(st.post));
+    post.position.set(0, 0.6, 0);
+    post.castShadow = true;
+    grp.add(post);
+  }
+  return grp;
+}
+
+// ---------- ĐỢT 6: CHIẾC GIỎ của nhiệm vụ "Bỏ vào giỏ" ----------
+function buildBasket(): THREE.Group {
+  const g = new THREE.Group();
+  const bodyMat = mat(0xb08968);
+  bodyMat.side = THREE.DoubleSide;
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.88, 0.62, 0.95, 18, 1, true), bodyMat,
+  );
+  body.position.y = 0.48;
+  body.castShadow = true;
+  g.add(body);
+  const bottom = new THREE.Mesh(new THREE.CircleGeometry(0.62, 18), mat(0x8a5a2b));
+  bottom.rotation.x = -Math.PI / 2;
+  bottom.position.y = 0.03;
+  g.add(bottom);
+  const inner = new THREE.Mesh(
+    new THREE.CircleGeometry(0.8, 18),
+    new THREE.MeshStandardMaterial({ color: 0x5d3d1e, roughness: 1 }),
+  );
+  inner.rotation.x = -Math.PI / 2;
+  inner.position.y = 0.3;
+  g.add(inner);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.88, 0.07, 10, 26), mat(0x8a5a2b));
+  rim.rotation.x = Math.PI / 2;
+  rim.position.y = 0.96;
+  g.add(rim);
+  for (const y of [0.28, 0.58]) {
+    const band = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.03, 8, 26), mat(0x8a5a2b));
+    band.rotation.x = Math.PI / 2;
+    band.position.y = y;
+    g.add(band);
+  }
+  return g;
+}
+
 /** Chim trang trí bay vòng trên trời (không bấm được). */
 function buildBird(color: number): { group: THREE.Group; wingL: THREE.Group; wingR: THREE.Group } {
   const group = new THREE.Group();
@@ -1802,6 +2090,9 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
   const [missionIndex, setMissionIndex] = useState(0);
   const [foundCount, setFoundCount] = useState(0);
   const [countTapped, setCountTapped] = useState(0);
+  // Đợt 6: tiến độ nhiệm vụ sinh đôi (0–2) và bỏ giỏ (0–need)
+  const [twinTapped, setTwinTapped] = useState(0);
+  const [basketCount, setBasketCount] = useState(0);
   const [wordCard, setWordCard] = useState<WorldObjectDef | null>(null);
   const [nearDef, setNearDef] = useState<WorldObjectDef | null>(null);
   const [feedback, setFeedback] = useState<{ kind: "good" | "try"; text: string } | null>(null);
@@ -1836,6 +2127,22 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
   const arrowInnerRef = useRef<HTMLSpanElement | null>(null);
   // Đợt 4: góc mũi tên chỉ đường hiện tại — xoay dần về hướng đích (không giật)
   const arrowAngleRef = useRef<number | null>(null);
+  // Đợt 6: cầu nối React → vòng lặp 3D cho 3 cơ chế chơi mới
+  const twinKeysRef = useRef<Set<string>>(new Set());
+  const basketKeysRef = useRef<Set<string>>(new Set());
+  /** Vật đích của nhiệm vụ dấu chân (vòng lặp tự vẽ vệt dấu chân tới đó). */
+  const trailTargetRef = useRef<{ key: string; x: number; z: number } | null>(null);
+  /** True khi nhiệm vụ dấu chân đang chạy → vòng lặp TẮT mũi tên chỉ đường. */
+  const arrowOffRef = useRef(false);
+  /** Các bản sao tạm (sinh đôi / vật cùng màu bỏ giỏ) vòng lặp cần dựng trong cảnh. */
+  const clonesRef = useRef<WorldObjectDef[]>([]);
+  const cloneKeysRef = useRef<Set<string>>(new Set());
+  /** Vật đang bay vào giỏ: khóa vật → thời điểm bắt đầu bay. */
+  const flyRef = useRef<Map<string, number>>(new Map());
+  /** Đặt true khi đổi nhiệm vụ → vòng lặp trả các vật đã bỏ giỏ về chỗ cũ. */
+  const restoreBasketRef = useRef(false);
+  /** True khi nhiệm vụ bỏ giỏ đang chạy → vòng sáng dưới giỏ nhấp nháy. */
+  const basketActiveRef = useRef(false);
   // Đợt 4: chuyển cảnh sang map tiếp theo sau khi xong 1 lượt nhiệm vụ
   const [transitionTo, setTransitionTo] = useState<MapDef | null>(null);
   const recRef = useRef<SpeechRecognitionLike | null>(null);
@@ -1867,9 +2174,16 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
     timersRef.current.forEach((t) => window.clearTimeout(t));
   }, []);
 
-  // Vật mà mũi tên chỉ đường dẫn tới + khóa vật phát sáng gợi ý
+  // Vật mà mũi tên chỉ đường dẫn tới + khóa vật phát sáng gợi ý.
+  // Đợt 6: mỗi dạng nhiệm vụ dùng tập "đã bấm" riêng (đếm / sinh đôi / bỏ giỏ).
+  const guideSet =
+    mission?.kind === "twin"
+      ? twinKeysRef.current
+      : mission?.kind === "basket"
+        ? basketKeysRef.current
+        : countedKeysRef.current;
   const guideTargetDef =
-    mission && mapDef ? missionTargetDef(mission, countedKeysRef.current, mapDef) : null;
+    mission && mapDef ? missionTargetDef(mission, guideSet, mapDef) : null;
   useEffect(() => {
     guideRef.current =
       guideTargetDef && !guideTargetDef.inSky
@@ -1884,9 +2198,42 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
   useEffect(() => {
     countedKeysRef.current = new Set();
     setCountTapped(0);
+    twinKeysRef.current = new Set();
+    setTwinTapped(0);
+    basketKeysRef.current = new Set();
+    setBasketCount(0);
     setHintActive(false);
     missionStartRef.current = Date.now();
   }, [missionIndex, missions]);
+
+  // Đợt 6: mỗi nhiệm vụ mới → báo cho vòng lặp 3D biết cơ chế nào đang chạy
+  // (vệt dấu chân tới đâu, tắt mũi tên hay không, bản sao tạm nào cần dựng,
+  // giỏ có đang "mở" không) + trả các vật đã bỏ giỏ của nhiệm vụ trước về chỗ cũ.
+  useEffect(() => {
+    if (!mission) {
+      trailTargetRef.current = null;
+      clonesRef.current = [];
+      cloneKeysRef.current = new Set();
+      arrowOffRef.current = false;
+      basketActiveRef.current = false;
+      return;
+    }
+    arrowOffRef.current = mission.kind === "trail";
+    trailTargetRef.current =
+      mission.kind === "trail"
+        ? { key: instKey(mission.def), x: mission.def.x, z: mission.def.z }
+        : null;
+    const clones =
+      mission.kind === "twin"
+        ? [mission.twinDef]
+        : mission.kind === "basket"
+          ? mission.spawnDefs
+          : [];
+    clonesRef.current = clones;
+    cloneKeysRef.current = new Set(clones.map(instKey));
+    basketActiveRef.current = mission.kind === "basket";
+    restoreBasketRef.current = true;
+  }, [mission, missionIndex, missions]);
 
   // Quá 20 giây chưa xong nhiệm vụ → bật gợi ý phát sáng
   useEffect(() => {
@@ -1917,7 +2264,11 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
       lastSpokenMissionRef.current = key;
       const t = missionText(mission);
       speakTimer = window.setTimeout(() => {
-        speakBilingual(t.speakVi, t.speakEn);
+        // ĐỢT 6: lệnh nhiệm vụ đọc BẰNG TIẾNG VIỆT là chính. Riêng dạng
+        // "Nghe và tìm" vẫn đọc nối tiếp câu tiếng Anh vì đó là nội dung
+        // bé phải nghe để đi tìm.
+        if (mission.kind === "listen") speakBilingual(t.speakVi, t.speakEn);
+        else speakDevice(t.speakVi, "vi-VN");
       }, 450);
     }
     return () => {
@@ -2019,8 +2370,15 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
     playWordAudioChained(def);
     setWordCard(def);
 
-    // Sổ Khám Phá: chỉ vật chính của map mới được ghi vào sổ (lưu bền trên server)
-    if (mapDef && mapDef.objects.includes(def)) {
+    // Sổ Khám Phá: chỉ vật chính của map mới được ghi vào sổ (lưu bền trên server).
+    // Đợt 6: bản sao tạm của một vật chính (bạn sinh đôi / vật bỏ giỏ) cũng
+    // được tính là đã khám phá vật chính đó.
+    const isBookObject =
+      mapDef &&
+      (mapDef.objects.includes(def) ||
+        (cloneKeysRef.current.has(key) &&
+          mapDef.objects.some((ob) => bookKey(ob) === bookKey(def))));
+    if (mapDef && isBookObject) {
       const objKey = bookKey(def);
       const already = discovered.get(mapDef.id)?.has(objKey) ?? false;
       if (!already) {
@@ -2042,28 +2400,111 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
 
     if (finished || celebrating || !mission) return;
 
-    if (mission.kind === "find" || mission.kind === "listen" || mission.kind === "hide" || mission.kind === "riddle") {
+    if (mission.kind === "find" || mission.kind === "listen" || mission.kind === "hide" || mission.kind === "riddle" || mission.kind === "trail") {
       if (def === mission.def) {
         completeCurrentMission(
           mission.kind === "hide"
             ? `Tìm thấy rồi! Bạn ${def.en} — ${def.vi} trốn ở đây này! 🎉`
             : mission.kind === "riddle"
               ? `Đoán đúng rồi! Đáp án câu đố là ${def.en} — ${def.vi}! Con suy luận giỏi quá! 🎉`
-              : `Đúng rồi! Đây là ${def.en} — ${def.vi}! 🎉`,
+              : mission.kind === "trail"
+                ? `Con đi theo dấu chân giỏi quá! Đây là ${def.en} — ${def.vi}! 🎉`
+                : `Đúng rồi! Đây là ${def.en} — ${def.vi}! 🎉`,
         );
       } else {
         setFeedback({
           kind: "try",
           text:
             mission.kind === "find"
-              ? `Đây là ${def.en} — ${def.vi}. Nhiệm vụ tìm ${mission.def.en} cơ, con thử lại nhé!`
+              ? `Đây là ${def.en} — ${def.vi}. Nhiệm vụ tìm ${mission.def.vi} cơ, con thử lại nhé!`
               : mission.kind === "listen"
                 ? `Đây là ${def.en} — ${def.vi}. Con bấm nút loa nghe lại cô đọc rồi tìm tiếp nhé!`
                 : mission.kind === "riddle"
                   ? `Đây là ${def.en} — ${def.vi}. Chưa phải đáp án câu đố đâu, con bấm loa nghe lại câu đố rồi đoán tiếp nhé!`
-                  : `Đây là ${def.en} — ${def.vi}. Bạn đang trốn chưa phải bạn này đâu, con tìm tiếp nhé!`,
+                  : mission.kind === "trail"
+                    ? `Đây là ${def.en} — ${def.vi}. Con cứ đi theo dấu chân phát sáng là tới bạn ${mission.def.vi} nhé!`
+                    : `Đây là ${def.en} — ${def.vi}. Bạn đang trốn chưa phải bạn này đâu, con tìm tiếp nhé!`,
         });
         tryAgainAudio();
+      }
+      return;
+    }
+
+    // ĐỢT 6: 👯 Tìm bạn sinh đôi — phải bấm vào CẢ HAI bạn giống hệt nhau.
+    if (mission.kind === "twin") {
+      const isTwin = def === mission.def || def === mission.twinDef;
+      if (!isTwin) {
+        setFeedback({
+          kind: "try",
+          text: `Đây là ${def.en} — ${def.vi}. Nhiệm vụ tìm hai bạn ${mission.def.vi} sinh đôi cơ, con tìm tiếp nhé!`,
+        });
+        tryAgainAudio();
+        return;
+      }
+      if (twinKeysRef.current.has(key)) {
+        setFeedback({
+          kind: "try",
+          text: `Bạn ${def.en} này con tìm thấy rồi! Còn một bạn sinh đôi nữa đó! 👯`,
+        });
+        return;
+      }
+      twinKeysRef.current.add(key);
+      const nTwin = twinKeysRef.current.size;
+      setTwinTapped(nTwin);
+      if (nTwin >= 2) {
+        completeCurrentMission(
+          `Tìm đủ cả hai bạn ${def.en} — ${def.vi} sinh đôi rồi! Con tinh mắt quá! 🎉`,
+        );
+      } else {
+        setFeedback({
+          kind: "good",
+          text: `Tìm thấy 1 bạn ${def.en} rồi (1/2)! Còn 1 bạn sinh đôi nữa đang chờ con! 👯`,
+        });
+      }
+      return;
+    }
+
+    // ĐỢT 6: 🧺 Bỏ vào giỏ — vật đúng bay vào giỏ, vật sai chỉ rung + cô nhắc lại lệnh.
+    if (mission.kind === "basket") {
+      const matches =
+        mission.mode === "color"
+          ? def.colorId === mission.colorId
+          : groupOf(def) === mission.baseId;
+      if (!matches) {
+        setFeedback({
+          kind: "try",
+          text:
+            mission.mode === "color"
+              ? `Đây là ${def.en} — ${def.vi}. Giỏ đang cần ${mission.sample.vi} màu ${COLORS[mission.colorId].vi} cơ, con tìm tiếp nhé!`
+              : `Đây là ${def.en} — ${def.vi}. Giỏ đang cần ${mission.sample.vi} cơ, con tìm tiếp nhé!`,
+        });
+        // Cô nhắc lại lệnh bằng tiếng Việt (sau khi bé nghe xong tên vật vừa bấm).
+        const viCmd = missionText(mission).speakVi;
+        later(() => speakDevice(viCmd, "vi-VN"), 1500);
+        return;
+      }
+      if (basketKeysRef.current.has(key)) {
+        setFeedback({
+          kind: "try",
+          text: `Bạn ${def.en} này đã ở trong giỏ rồi! Con tìm bạn khác nhé! 🧺`,
+        });
+        return;
+      }
+      basketKeysRef.current.add(key);
+      flyRef.current.set(key, performance.now());
+      const nBasket = basketKeysRef.current.size;
+      setBasketCount(nBasket);
+      const numB = NUMBERS[nBasket - 1];
+      if (numB) playKeyAudio(numB.key, numB.en, "en-US");
+      if (nBasket >= mission.need) {
+        completeCurrentMission(
+          `Bỏ đủ ${nBasket} bạn vào giỏ rồi! Con khéo tay quá! 🧺🎉`,
+        );
+      } else {
+        setFeedback({
+          kind: "good",
+          text: `Vào giỏ! 🧺 Đã bỏ ${nBasket}/${mission.need} — con tìm tiếp nhé!`,
+        });
       }
       return;
     }
@@ -2143,7 +2584,10 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
   const speakMission = () => {
     if (!mission) return;
     const t = missionText(mission);
-    speakBilingual(t.speakVi, t.speakEn);
+    // ĐỢT 6: nút "Nghe lại nhiệm vụ" đọc lại câu TIẾNG VIỆT (dạng nghe-và-tìm
+    // đọc thêm câu tiếng Anh như lúc ra nhiệm vụ).
+    if (mission.kind === "listen") speakBilingual(t.speakVi, t.speakEn);
+    else speakDevice(t.speakVi, "vi-VN");
   };
 
   // ---------- "Nói theo cô" trong thẻ từ ----------
@@ -2438,6 +2882,122 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
     }
     const byKey = new Map(entries.map((e) => [instKey(e.def), e]));
 
+    // ĐỢT 6: BẢNG HIỆU TIẾNG ANH cho MỖI vật/con vật — đặt ngay cạnh vật,
+    // lệch về phía trung tâm map (hướng bé tiếp cận chính), mặt bảng quay
+    // về phía đó. Texture vẽ 1 lần cho mỗi từ (dùng chung cho vật phụ /
+    // bản sao cùng tên); bảng không nằm trong clickTargets nên không cản
+    // việc bấm vào vật, cũng không che vật.
+    const signTexCache = new Map<string, THREE.CanvasTexture>();
+    const signByKey = new Map<string, THREE.Group>();
+    const addSign = (def: WorldObjectDef) => {
+      let tex = signTexCache.get(def.en);
+      if (!tex) {
+        tex = makeSignTexture(def.en, mapDef.id);
+        signTexCache.set(def.en, tex);
+      }
+      const sign = buildSign(mapDef.id, tex);
+      const len = Math.hypot(def.x, def.z) || 1;
+      const dirx = -def.x / len;
+      const dirz = -def.z / len;
+      const big = BIG_SIGN_IDS.has(def.id);
+      const dist = big ? 3.1 : 2.3;
+      sign.position.set(def.x + dirx * dist, 0, def.z + dirz * dist);
+      sign.rotation.y = Math.atan2(dirx, dirz);
+      const baseScale = big ? 1.12 : 1;
+      sign.scale.setScalar(baseScale);
+      sign.userData.baseScale = baseScale;
+      scene.add(sign);
+      signByKey.set(instKey(def), sign);
+      return sign;
+    };
+    for (const def of allDefs(mapDef)) addSign(def);
+
+    // ĐỢT 6: chiếc giỏ cố định gần điểm xuất phát cho nhiệm vụ "Bỏ vào giỏ"
+    // (luôn có mặt như một vật trang trí; nhiệm vụ chạy thì vòng sáng nhấp nháy).
+    const basketGroup = buildBasket();
+    basketGroup.position.set(BASKET_POS.x, 0, BASKET_POS.z);
+    scene.add(basketGroup);
+    const basketRing = makeRing(0x2ec4b6);
+    basketRing.position.set(BASKET_POS.x, 0.06, BASKET_POS.z);
+    basketRing.scale.setScalar(0.62);
+    scene.add(basketRing);
+
+    // ĐỢT 6: BẢN SAO TẠM (bạn sinh đôi / vật cùng màu bỏ giỏ) — vòng lặp tự
+    // dựng/gỡ theo clonesRef mà React cập nhật mỗi khi nhiệm vụ thay đổi.
+    let cloneEntries: ObjEntry[] = [];
+    let cloneSig = "";
+    const disposeGroup = (grp: THREE.Group) => {
+      grp.traverse((c) => {
+        const mesh = c as THREE.Mesh;
+        if (mesh.geometry) mesh.geometry.dispose();
+        const mm = mesh.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(mm)) mm.forEach((x) => x.dispose());
+        else if (mm) mm.dispose();
+      });
+    };
+    const syncClones = () => {
+      const want = clonesRef.current;
+      const sig = want.map(instKey).join(",");
+      if (sig === cloneSig) return;
+      cloneSig = sig;
+      for (const ce of cloneEntries) {
+        const ck = instKey(ce.def);
+        scene.remove(ce.group);
+        disposeGroup(ce.group);
+        const sgn = signByKey.get(ck);
+        if (sgn) {
+          scene.remove(sgn);
+          disposeGroup(sgn); // texture dùng chung trong cache nên chỉ xả geometry/material
+          signByKey.delete(ck);
+        }
+        const ei = entries.indexOf(ce);
+        if (ei >= 0) entries.splice(ei, 1);
+        const ci = clickTargets.indexOf(ce.group);
+        if (ci >= 0) clickTargets.splice(ci, 1);
+        byKey.delete(ck);
+      }
+      cloneEntries = [];
+      for (const def of want) {
+        const group = buildFor(def);
+        if (!group) continue;
+        group.position.set(def.x, 0, def.z);
+        group.userData.objKey = instKey(def);
+        const ring = makeRing(0xffc53d);
+        group.add(ring);
+        group.traverse((c) => {
+          c.userData.objKey = instKey(def);
+        });
+        scene.add(group);
+        const entry: ObjEntry = { def, group, ring };
+        entries.push(entry);
+        clickTargets.push(group);
+        byKey.set(instKey(def), entry);
+        cloneEntries.push(entry);
+        addSign(def); // bản sao cũng có bảng hiệu tiếng Anh như vật thường
+      }
+    };
+
+    // ĐỢT 6: VỆT DẤU CHÂN phát sáng cho nhiệm vụ 👣 — hiện dần theo bước đi.
+    const trailGroup = new THREE.Group();
+    scene.add(trailGroup);
+    const printGeo = new THREE.CircleGeometry(0.3, 14);
+    const printMat = new THREE.MeshBasicMaterial({
+      color: 0xffc53d, transparent: true, opacity: 0.95, depthWrite: false,
+    });
+    let trailKey: string | null = null;
+    let trailPts: { x: number; z: number; mesh: THREE.Mesh }[] = [];
+    let trailShown = 0;
+    const clearTrail = () => {
+      for (const p of trailPts) trailGroup.remove(p.mesh);
+      trailPts = [];
+      trailShown = 0;
+      trailKey = null;
+    };
+
+    // ĐỢT 6: vật đang bay / đã nằm trong giỏ của nhiệm vụ 🧺.
+    const flyStart = new Map<string, THREE.Vector3>();
+    const basketHidden = new Set<string>();
+
     // Nhân vật của bé
     const player = buildCharacter(character);
     player.position.set(0, 0, 9);
@@ -2549,6 +3109,55 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
       try {
         const dt = Math.min(clock.getDelta(), 0.05);
         elapsed += dt;
+
+        // ĐỢT 6: đồng bộ bản sao tạm theo nhiệm vụ hiện tại (rất rẻ: so chữ ký)
+        syncClones();
+
+        // ĐỢT 6: đổi nhiệm vụ → trả các vật đã bỏ giỏ về vị trí cũ, hiện lại.
+        if (restoreBasketRef.current) {
+          restoreBasketRef.current = false;
+          const restoreOne = (key: string) => {
+            const e = byKey.get(key);
+            if (e) {
+              e.group.visible = true;
+              e.group.position.set(e.def.x, 0, e.def.z);
+              e.group.rotation.y = 0;
+            }
+          };
+          for (const key of basketHidden) restoreOne(key);
+          basketHidden.clear();
+          for (const key of [...flyRef.current.keys()]) restoreOne(key);
+          flyRef.current.clear();
+          flyStart.clear();
+        }
+
+        // ĐỢT 6: vật bay theo đường cong parabol vào giỏ 🧺
+        for (const [key, t0] of [...flyRef.current]) {
+          const e = byKey.get(key);
+          if (!e) {
+            flyRef.current.delete(key);
+            continue;
+          }
+          if (!flyStart.has(key)) flyStart.set(key, e.group.position.clone());
+          const from = flyStart.get(key)!;
+          const t = Math.min(1, (performance.now() - t0) / 950);
+          e.group.position.set(
+            from.x + (BASKET_POS.x - from.x) * t,
+            from.y + (1.15 - from.y) * t + Math.sin(t * Math.PI) * 2.4,
+            from.z + (BASKET_POS.z - from.z) * t,
+          );
+          e.group.rotation.y += dt * 6;
+          if (t >= 1) {
+            e.group.visible = false;
+            e.group.rotation.y = 0;
+            basketHidden.add(key);
+            flyRef.current.delete(key);
+            flyStart.delete(key);
+          }
+        }
+        // Vòng sáng dưới giỏ: nhiệm vụ bỏ giỏ đang chạy thì nhấp nháy mời gọi.
+        (basketRing.material as THREE.MeshBasicMaterial).opacity =
+          basketActiveRef.current ? 0.7 + 0.3 * Math.sin(elapsed * 5) : 0.22;
         // Di chuyển THEO GÓC CAMERA: ↑ luôn là đi tới phía trước màn hình,
         // ← → luôn là sang trái/phải màn hình — như đôi mắt bé nhìn.
         const keys = keysRef.current;
@@ -2679,12 +3288,62 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
           }
         }
 
+        // ĐỢT 6: 👣 VỆT DẤU CHÂN — dựng vệt từ chỗ bé đang đứng tới vật cần
+        // tìm khi nhiệm vụ bắt đầu; dấu tiếp theo chỉ hiện khi bé đi tới gần
+        // dấu hiện tại, để bé tự lần theo dấu chân (không có mũi tên).
+        const tt = trailTargetRef.current;
+        if (!tt) {
+          if (trailKey) clearTrail();
+        } else if (tt.key !== trailKey) {
+          clearTrail();
+          trailKey = tt.key;
+          const sx = playerPos.x;
+          const sz = playerPos.z;
+          const dx = tt.x - sx;
+          const dz = tt.z - sz;
+          const dist = Math.hypot(dx, dz) || 1;
+          const ux = dx / dist;
+          const uz = dz / dist;
+          const px = -uz;
+          const pz = ux;
+          const n = Math.max(2, Math.min(16, Math.round(dist / 2.1)));
+          for (let i = 1; i <= n; i++) {
+            const t = i / (n + 0.5);
+            const off = (i % 2 === 0 ? 1 : -1) * 0.3; // chân trái / chân phải
+            const x = sx + dx * t + px * off;
+            const z = sz + dz * t + pz * off;
+            const mesh = new THREE.Mesh(printGeo, printMat);
+            mesh.rotation.set(-Math.PI / 2, 0, Math.atan2(ux, uz));
+            mesh.position.set(x, 0.06, z);
+            mesh.scale.set(0.8, 1.3, 1);
+            mesh.visible = i === 1;
+            trailGroup.add(mesh);
+            trailPts.push({ x, z, mesh });
+          }
+          trailShown = 1;
+        }
+        if (tt && trailPts.length > 0) {
+          const cur = trailPts[Math.min(trailShown, trailPts.length) - 1];
+          if (cur) {
+            const pulse = 1 + 0.16 * Math.sin(elapsed * 6);
+            cur.mesh.scale.set(0.8 * pulse, 1.3 * pulse, 1);
+          }
+          if (trailShown < trailPts.length) {
+            const last = trailPts[trailShown - 1]!;
+            if (Math.hypot(playerPos.x - last.x, playerPos.z - last.z) < 1.9) {
+              trailPts[trailShown]!.mesh.visible = true;
+              trailShown++;
+            }
+          }
+        }
+
         // Mũi tên chỉ đường: xoay theo hướng từ nhân vật tới vật của nhiệm vụ
+        // (nhiệm vụ 👣 dấu chân thì TẮT hẳn để bé tự lần theo dấu chân).
         const gTarget = guideRef.current;
         const aWrap = arrowWrapRef.current;
         const aInner = arrowInnerRef.current;
         if (aWrap && aInner) {
-          if (!gTarget) {
+          if (!gTarget || arrowOffRef.current) {
             aWrap.style.opacity = "0";
           } else {
             const adx = gTarget.x - playerPos.x;
@@ -2726,10 +3385,12 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
             nearest = entry;
           }
           const key = instKey(entry.def);
+          // Đợt 6: vật đang bay vào giỏ / đã ở trong giỏ → không chạy hiệu ứng tại chỗ
+          const busy = flyRef.current.has(key) || basketHidden.has(key);
           // Hiệu ứng nảy khi được bấm chọn / phát sáng nhấp nháy khi là gợi ý
           let scaleF = 1;
           const bStart = bounceRef.current.get(key);
-          if (bStart) {
+          if (bStart && !busy) {
             const t = (performance.now() - bStart) / 650;
             if (t >= 1) {
               bounceRef.current.delete(key);
@@ -2748,8 +3409,22 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
             scaleF = 1 + 0.17 * Math.sin(elapsed * 7);
           }
           entry.group.scale.setScalar(scaleF);
+          // ĐỢT 6: BẢNG HIỆU ăn mừng cùng vật — nảy nhẹ khi vật vừa được bấm
+          // đúng, nhấp nháy khi vật đang là gợi ý phát sáng.
+          const sign = signByKey.get(key);
+          if (sign) {
+            let sPulse = 1;
+            if (bStart && !busy) {
+              const st = (performance.now() - bStart) / 650;
+              if (st < 1) sPulse = 1 + 0.13 * Math.sin(st * Math.PI);
+            }
+            if (hintKeyRef.current === key) {
+              sPulse *= 1 + 0.07 * Math.sin(elapsed * 7);
+            }
+            sign.scale.setScalar(((sign.userData.baseScale as number) ?? 1) * sPulse);
+          }
           if (entry.def.id === "sun") entry.group.rotation.z += dt * 0.25;
-          if (entry.def.id === "fish") {
+          if (entry.def.id === "fish" && !busy) {
             // Cá thỉnh thoảng nhảy vọt lên khỏi mặt hồ rồi rơi xuống
             const ph = elapsed % 3.8;
             if (ph < 1) {
@@ -2762,7 +3437,9 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
           }
           // Chuyển động riêng của con vật cho cảnh sống động (đợt 3)
           const ph2 = entry.def.x * 1.7 + entry.def.z * 2.3;
-          if (entry.def.id === "chicken") {
+          if (busy) {
+            // Đang bay vào giỏ / đã ở trong giỏ: bỏ qua chuyển động riêng.
+          } else if (entry.def.id === "chicken") {
             // Gà mổ thóc: cúi xuống từng nhịp ngắn
             const peck = Math.pow(Math.max(0, Math.sin(elapsed * 2.1 + ph2)), 6);
             entry.group.rotation.x = peck * 0.38;
@@ -2792,7 +3469,7 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
           // (chuông rung leng keng, bóng nảy, xe chạy một đoạn, sách mở ra,
           // cây rung quả, cá nhảy cao, khỉ nhảy, vịt nhảy mừng…).
           const rb = bounceRef.current.get(key);
-          if (rb) {
+          if (rb && !busy) {
             const rt = (performance.now() - rb) / 650;
             if (rt >= 0 && rt < 1) {
               const decay = 1 - rt;
@@ -3136,7 +3813,7 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
           <div className="mc-pop absolute top-2 left-2 max-w-[76%] rounded-[18px] bg-white/95 p-2.5 shadow-lg sm:max-w-[320px]">
             <div className="flex items-center gap-2">
               <span className="text-xl" aria-hidden>
-                {mission.kind === "color" ? "🎨" : mission.kind === "count" ? "🔢" : mission.kind === "riddle" ? "🤔" : "🎯"}
+                {mission.kind === "color" ? "🎨" : mission.kind === "count" ? "🔢" : mission.kind === "riddle" ? "🤔" : mission.kind === "trail" ? "👣" : mission.kind === "twin" ? "👯" : mission.kind === "basket" ? "🧺" : "🎯"}
               </span>
               <span className="font-display text-xs font-extrabold text-[var(--dim)]">
                 NHIỆM VỤ MỚI {missionIndex + 1}/{missions.length} · ⭐ {foundCount}
@@ -3166,10 +3843,16 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 />
               )}
               <div className="min-w-0">
-                <p className="font-display text-lg leading-tight font-extrabold">
-                  {mText.enTitle}
+                {/* ĐỢT 6: câu lệnh TIẾNG VIỆT chữ lớn là nội dung chính;
+                    tên tiếng Anh chỉ hiện thành dòng nhỏ khi gợi ý cấp 2 bật. */}
+                <p className="font-display text-xl leading-tight font-extrabold">
+                  {mText.viTitle}
                 </p>
-                <p className="text-[13px] leading-tight font-bold text-[var(--dim)]">{mText.viTitle}</p>
+                {hintActive && mText.enHint && (
+                  <p className="mc-pop text-[13px] leading-tight font-bold text-[#2b7bb9]" role="status">
+                    🇬🇧 {mText.enHint}
+                  </p>
+                )}
               </div>
             </div>
             {mission.kind === "count" && (
@@ -3182,11 +3865,30 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 {mission.need})
               </p>
             )}
+            {mission.kind === "twin" && (
+              <p
+                className="font-display mt-1 text-sm font-extrabold text-[var(--mint)]"
+                aria-label={`Đã tìm ${twinTapped} trên 2 bạn sinh đôi`}
+              >
+                Đã tìm: {"⭐".repeat(twinTapped)}
+                {"☆".repeat(Math.max(0, 2 - twinTapped))} ({twinTapped}/2)
+              </p>
+            )}
+            {mission.kind === "basket" && (
+              <p
+                className="font-display mt-1 text-sm font-extrabold text-[var(--mint)]"
+                aria-label={`Đã bỏ vào giỏ ${basketCount} trên ${mission.need} bạn`}
+              >
+                Trong giỏ: {"🧺".repeat(basketCount)}
+                {"☆".repeat(Math.max(0, mission.need - basketCount))} ({basketCount}/
+                {mission.need})
+              </p>
+            )}
             <div className="mt-1.5 flex gap-1.5">
               <button
                 type="button"
                 onClick={speakMission}
-                aria-label={`Nghe lại nhiệm vụ: ${mText.viTitle} — ${mText.enTitle}`}
+                aria-label={`Nghe lại nhiệm vụ: ${mText.viTitle}`}
                 className="font-display flex-1 rounded-full bg-[var(--sun)] px-3 py-1.5 text-[13px] font-extrabold shadow active:scale-95"
               >
                 🔊 Nghe lại nhiệm vụ
@@ -3214,6 +3916,16 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 🤔 Nghe câu đố, suy nghĩ rồi đi tìm bạn đó nhé! Bấm 🔊 để nghe lại câu đố.
               </p>
             )}
+            {mission.kind === "trail" && !hintActive && (
+              <p className="font-display mt-1.5 rounded-xl bg-[#FFF7DB] px-2.5 py-1.5 text-[13px] font-extrabold" role="status">
+                👣 Cứ bước theo dấu chân vàng trên mặt đất — dấu mới sẽ hiện ra khi con tới gần nhé!
+              </p>
+            )}
+            {mission.kind === "basket" && !hintActive && (
+              <p className="font-display mt-1.5 rounded-xl bg-[#E7F8F3] px-2.5 py-1.5 text-[13px] font-extrabold" role="status">
+                🧺 Chiếc giỏ ở gần chỗ bắt đầu xuất phát. Bấm vào vật đúng là vật bay vào giỏ!
+              </p>
+            )}
           </div>
         )}
         {!finished && mission && mText && !missionPanelBig && (
@@ -3224,7 +3936,7 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 setMissionPanelBig(true);
                 window.setTimeout(() => setMissionPanelBig(false), 3000);
               }}
-              aria-label={`Xem nhiệm vụ ${missionIndex + 1} trên ${missions.length}: ${mText.viTitle} — ${mText.enTitle}`}
+              aria-label={`Xem nhiệm vụ ${missionIndex + 1} trên ${missions.length}: ${mText.viTitle}`}
               className="flex min-w-0 flex-1 items-center gap-1.5 text-left active:scale-[0.99]"
             >
               <span className="font-display shrink-0 text-xs font-extrabold text-[var(--dim)]">
@@ -3239,10 +3951,18 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 />
               )}
               <span className="font-display truncate text-[13px] font-extrabold">
-                {mText.enTitle}
-                <span className="font-bold text-[var(--dim)]"> · {mText.viTitle}</span>
+                {mText.viTitle}
                 {mission.kind === "count" ? (
                   <span className="text-[var(--mint)]"> · {countTapped}/{mission.need} ⭐</span>
+                ) : null}
+                {mission.kind === "twin" ? (
+                  <span className="text-[var(--mint)]"> · {twinTapped}/2 ⭐</span>
+                ) : null}
+                {mission.kind === "basket" ? (
+                  <span className="text-[var(--mint)]"> · 🧺 {basketCount}/{mission.need}</span>
+                ) : null}
+                {hintActive && mText.enHint ? (
+                  <span className="font-bold text-[#2b7bb9]"> · 🇬🇧 {mText.enHint}</span>
                 ) : null}
               </span>
             </button>
@@ -3254,7 +3974,7 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
             <button
               type="button"
               onClick={speakMission}
-              aria-label={`Nghe lại nhiệm vụ: ${mText.viTitle} — ${mText.enTitle}`}
+              aria-label={`Nghe lại nhiệm vụ: ${mText.viTitle}`}
               className="font-display flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--sun)] text-base shadow active:scale-90"
             >
               🔊
@@ -3523,10 +4243,13 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
         👁️ Camera đi theo sau vai như mắt bé nhìn: ↑ đi tới, ↓ đi lui, ← → rẽ
         trái/phải (xoay êm chậm rãi) · ⌨️ Dùng 4 phím mũi tên hoặc 📱 bấm giữ 4 nút
         mũi tên ở góc phải · ⭐ Tên của bé luôn hiện trên đầu nhân vật · 🔊 Mỗi
-        nhiệm vụ mới cô tự đọc tiếng Việt cho bé nghe · 🧭 Mũi tên vàng chỉ đường
-        tới vật cần tìm · 🖱️ Bấm vào đồ vật: vật sẽ NHẢY, RUNG, CHẠY… phản ứng
-        vui, hiện thẻ từ và luyện nói theo cô · 🏁 Xong 7 nhiệm vụ là đi tiếp
-        sang nơi mới đẹp hơn!
+        nhiệm vụ mới cô đọc lệnh BẰNG TIẾNG VIỆT cho bé nghe · 🏷️ Mỗi bạn đều có
+        BẢNG HIỆU ghi tên tiếng Anh ngay bên cạnh — tìm đúng bạn rồi đọc bảng
+        hiệu là học được từ mới · 🧭 Mũi tên vàng chỉ đường tới vật cần tìm
+        (riêng nhiệm vụ 👣 thì đi theo dấu chân phát sáng) · 👯 Có nhiệm vụ tìm
+        bạn sinh đôi và 🧺 bỏ đồ vào giỏ · 🖱️ Bấm vào đồ vật: vật sẽ NHẢY, RUNG,
+        CHẠY… phản ứng vui, hiện thẻ từ và luyện nói theo cô · 🏁 Xong 7 nhiệm
+        vụ là đi tiếp sang nơi mới đẹp hơn!
       </p>
     </main>
   );
