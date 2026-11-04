@@ -1,6 +1,6 @@
 ================================================================================
 GÓI MÃ NGUỒN — ỨNG DỤNG "HỌC TIẾNG ANH LỚP 1 CÙNG MINH CHÂU"
-Bản mới nhất, xuất ngày 2026-11-04 — đã gồm Game Khám Phá 3D (4 map) và Thử thách trí tuệ.
+Bản mới nhất, xuất ngày 2026-11-04 — đã gồm Game Khám Phá 3D (4 map), Thử thách trí tuệ, nhiệm vụ nói tiếng Việt + bảng hiệu tiếng Anh trong map và 3 cách chơi mới (dấu chân, sinh đôi, bỏ vào giỏ).
 ================================================================================
 
 CÁCH DÙNG VỚI BẤT KỲ TÀI KHOẢN MUSE NÀO
@@ -30,13 +30,13 @@ bunfig.toml  —  sha256:77c99038fe2cbbdb274e3b324fc20cd0a02a3d3c1db2674d8703e0d
 bun.lock  —  sha256:3a504366b98fb8ed223890141c9f966cb15a75802b6144d447cdec1c1b1bf612  —  20688 bytes
 tsconfig.base.json  —  sha256:1000b5fb48cee172a53a1ad37c821330b3f48b227f4fc580070b393e1d80ba1f  —  635 bytes
 AGENTS.md  —  sha256:91dcc9f60559d38057b72738fa0e666e8a43f96b522bc50c21065813b32fd194  —  1068 bytes
-DATA-PLAN.md  —  sha256:ffa4f3d7faa17e02a1e8ddc9b9a38d761582dd6ff0d4e14a0cfc0137ad8069e4  —  18612 bytes
+DATA-PLAN.md  —  sha256:81b1286dc9bcb1c2ea9b1b7519cfe09c25101b178ac74686e95444af2297c160  —  22047 bytes
 client/index.html  —  sha256:4bcc2943617283284005b7cce4e5c92e6ab3f4ab955dad470758d3a1032993bb  —  694 bytes
 client/build.mjs  —  sha256:e828666e5d505cbc481c7ddddd0d16000832fc26faf4177f3e312db2fdf1c4cc  —  361 bytes
 client/tsconfig.json  —  sha256:d9cc6609a832013b9cdb0d81c0c997a426e20b94c93fee3fa1472916bb42c971  —  430 bytes
 client/src/main.tsx  —  sha256:300d8cb852036ce595743f0941fe91a34f16714730d40718ff6712e6d9253b2a  —  1151 bytes
 client/src/App.tsx  —  sha256:edf34e5483931dfd2d6e5ab6ce3d9f099ec4168725b4fcfa4344b117f1d655cb  —  146879 bytes
-client/src/Game3D.tsx  —  sha256:faf9f8c095e37bdca8eddbbea31a4aab983555e38a8d5661bab45edcb5217f97  —  153336 bytes
+client/src/Game3D.tsx  —  sha256:e712e04a4bc51c2f8d418aabfad4acc65c6051269aa035635fac05b892bcabec  —  186864 bytes
 client/src/api.ts  —  sha256:b37eff4d0ae161ae983d7fe49eab48f352dd64b832deb93d6298d7e689885f69  —  935 bytes
 client/src/content.ts  —  sha256:3e76441dfaf80fcb18d1cf45413897ab9e8862c35dbd8506f8752af3f240f320  —  33118 bytes
 client/src/audioMap.ts  —  sha256:6e2f88e3d5dcf93b2a6aa21ec8239057c478f1045515c35c9e6fcf09c91967e6  —  13323 bytes
@@ -603,7 +603,7 @@ against `~/workspace/ts-spaces/<slug>/app.db`.
 ===== END FILE: AGENTS.md =====
 
 ===== FILE: DATA-PLAN.md =====
------ sha256: ffa4f3d7faa17e02a1e8ddc9b9a38d761582dd6ff0d4e14a0cfc0137ad8069e4 | bytes: 18612 -----
+----- sha256: 81b1286dc9bcb1c2ea9b1b7519cfe09c25101b178ac74686e95444af2297c160 | bytes: 22047 -----
 # Data Plan
 
 ## Context provenance
@@ -651,6 +651,11 @@ against `~/workspace/ts-spaces/<slug>/app.db`.
 - (A) Trong LessonScreen của MỌI bài (16 Unit + Fun time/Review dùng kho từ trộn của chúng + Học thêm), cuối phần hoạt động thêm mục "🧠 Thử thách trí tuệ của Unit này" (phase mới `brain`, component BrainChallenge trong App.tsx): 4 dạng xoay vòng theo số Unit — 👀 Ai biến mất? (hiện 3–4 từ của bài vài giây → che 1 → chọn), 👥 Ai không cùng nhóm? (bộ 3 bắt buộc thật sự cùng nhóm: ưu tiên cùng nhóm nghĩa qua BRAIN_CATEGORY_VI phủ toàn bộ từ vựng SGK+mở rộng — con vật/đồ ăn/trái cây/xe cộ/đồ chơi/đồ dùng học tập/người/cơ thể/nhà/thiên nhiên/số/màu/thời tiết/hành động/cảm xúc — và bạn lạc nhóm phải thuộc nhóm nghĩa khác hẳn; không có nhóm nghĩa ≥3 thì dùng cùng chữ cái trọng tâm của Unit; cuối cùng mới là nhóm "từ của bài này" và giải thích nói đúng định nghĩa đó; giải thích nêu cả nhóm của bộ 3 lẫn nhóm của bạn lạc), 🌑 Tìm bóng (silhouette = emoji lọc brightness(0)), 🔁 Đi tiếp theo mẫu (ABAB/AAB bằng từ của bài). Mỗi câu có nút 🔊 nghe câu hỏi tiếng Việt (playAudio khóa không có MP3 → giọng thiết bị vi-VN như lệ cũ) + nghe từ bằng MP3 cô; sai nhắc nhẹ + gợi ý, không trừ điểm, không bấm giờ; đúng ngay lần đầu tính sao qua action completeLesson sẵn có với lessonId `brain-<lessonId>` + tặng sticker mới stk-brain / stk-curiosity (thêm vào ALL_STICKERS trong content.ts). Không thêm bảng/migration/action mới.
 - (B) Kiến thức mở rộng bắt buộc từng bài: dữ liệu LESSON_EXTENSIONS + extensionForLessonId trong content.ts — đủ 16 Unit + 10 mục Học thêm (Fun time/Review lấy của Unit đầu nhóm ôn). Mỗi bài: 1 sự thật thú vị ngắn tiếng Việt đúng lứa tuổi 6 liên quan chủ đề bài + 2 từ mở rộng cùng chủ đề gắn nhãn "Từ mở rộng — ngoài sách", có emoji + phiên âm + nghĩa + nút 🔊 (từ có MP3 dùng đúng khóa sẵn có: banana, x-orange, x-bed, x-lamp, x-ruler, x-crayon, x-frog, x-eye, x-ear, x-eleven, x-twelve, x-elephant, x-lion, duck, x-strawberry, x-watermelon, x-brother, x-sister, x-sofa, x-tv…; từ chưa có MP3 dùng khóa ext-* → giọng thiết bị) + nút "Nói theo cô" chấm 0–100 bằng scoreSpeech sẵn có (ExtensionWordCard). Thẻ "🌟 Con có biết?" hiện ở màn tổng kết riêng sau khi xong thử thách của bài đó; ví dụ đúng yêu cầu: Unit con vật thêm giraffe/panda (ở extra-animals và fallback), mục đồ dùng học tập thêm "school bag — cặp sách" (extra-school).
 - (C) Game Khám Phá 3D thêm dạng nhiệm vụ "Câu đố của cô" (kind `riddle` trong Game3D.tsx): RIDDLE_VI có câu đố tiếng Việt cho mọi id vật có trong 4 map (bus…zebra, fallback theo def.vi); buildRound nay mỗi lượt 7 nhiệm vụ = 2 find + listen + hide + riddle + color + count (xáo trộn); panel chỉ hiện ❓ + "Riddle time!", speakVi tự đọc câu đố tiếng Việt qua speakBilingual sẵn có, nút nghe lại đọc lại câu đố; gợi ý sau 15 giây (chữ cái đầu + vị trí qua hideHintText) + vật phát sáng như lệ cũ; bấm đúng ăn mừng với lời giải đáp án, sai nhắc nghe lại câu đố, không trừ điểm.
+
+## Bổ sung 2026-11-04: Nhiệm vụ tiếng Việt + bảng hiệu tiếng Anh + 3 cách chơi mới — đợt 6 (yêu cầu của người dùng)
+- (1) Tiếng Việt là chính trong Game 3D: missionText viết lại — viTitle là câu lệnh tiếng Việt ("Hãy tìm con chó!", "Hãy tìm xe ô tô màu đỏ!", "Hãy chạm 3 con vịt nhé!"…) hiện chữ lớn trên panel to lẫn thanh thu gọn; cô TỰ ĐỌC và nút Nghe lại chỉ đọc câu tiếng Việt (speakDevice vi-VN; riêng dạng "Nghe và tìm" vẫn đọc nối tiếp câu tiếng Anh vì đó là nội dung nghe). Tên tiếng Anh của vật cần tìm không hiện sẵn nữa: chỉ xuất hiện ở dòng gợi ý cấp 2 🇬🇧 (enHint) khi hintActive sau ~20 giây (hide/riddle giữ gợi ý riêng như cũ), hoặc trong thẻ từ sau khi tìm đúng.
+- (2) Bảng hiệu tiếng Anh: buildSign/makeSignTexture (canvas texture, chữ Baloo 800 tự co cỡ, cache theo từ trong mỗi lần dựng cảnh) — MỌI def trong allDefs của cả 4 map + bản sao tạm đều có bảng đứng cạnh vật, lệch về phía trung tâm map (hướng tiếp cận chính), mặt trước/sau cùng đọc được; phong cách theo map: Thành phố biển đường phố xanh dương cột kim loại, Đồng quê gỗ nâu, Bãi biển viền teal, Sở thú biển chuồng 2 cột viền xanh lá; vật to (voi/ngựa/xe/cây…) bảng xa hơn (3.1) và to hơn 1.12×. Bảng không vào clickTargets (không cản bấm vật), tìm đúng thì bảng nảy ăn mừng theo cùng cửa sổ bounce 650ms + nhấp nháy khi là vật gợi ý. Không thêm tài nguyên ngoài.
+- (3) Ba dạng nhiệm vụ mới (Mission thêm trail/twin/basket; buildRound trộn vào 7 nhiệm vụ/lượt, đảm bảo ≥1 dạng mới bằng cơ chế thay ngẫu nhiên 1–2 nhiệm vụ lõi tại vị trí phân biệt): 👣 trail — vòng lặp 3D tự vẽ vệt dấu chân (tối đa 16 dấu, cách ~2.1 đơn vị, lệch trái/phải) từ chỗ bé đứng tới vật, dấu kế chỉ hiện khi bé tới gần dấu hiện tại (<1.9), arrowOffRef tắt hẳn mũi tên chỉ đường, gợi ý phát sáng 20 giây giữ nguyên; 👯 twin — twinDef là bản sao tạm (scatterPos: cách gốc 10–20 đơn vị, không chồng vật/giỏ/điểm xuất phát), vòng lặp đồng bộ bản sao qua clonesRef (sig theo instKey), phải bấm cả hai (twinKeysRef + tiến độ 0/2–2/2 trên panel), bản sao có bảng hiệu và biến mất khi nhiệm vụ kết thúc; 🧺 basket — giỏ 3D cố định ở BASKET_POS (-2.8, 11.5) gần điểm xuất phát (0, 9) + vòng sáng nhấp nháy khi nhiệm vụ chạy; theo màu (mỗi màu sẵn có 1 vật nên sinh spawnDefs bản sao cùng màu cho đủ need 2–3) hoặc theo loại (nhóm đếm của map, need 2–3); bấm đúng → flyRef, vòng lặp cho vật bay parabol ~0.95s vào giỏ rồi ẩn; đổi nhiệm vụ → restoreBasketRef trả mọi vật về chỗ cũ; bấm sai → vật rung (bounce sẵn có) + cô nhắc lại lệnh tiếng Việt sau 1.5s, không trừ điểm. Vật chính tìm được qua bản sao vẫn ghi Sổ Khám Phá (isBookObject: vật chính hoặc clone có bookKey trùng vật chính). Không thêm bảng/migration/action mới; dữ liệu đã lưu không đổi.
 
 ## Long-term data behavior
 - **Refresh policy**: no runtime external data; all lesson content, audio, and images are static files copied from the package. Google Fonts CSS is the only runtime host read (declared below).
@@ -4300,7 +4305,7 @@ export function App() {
 ===== END FILE: client/src/App.tsx =====
 
 ===== FILE: client/src/Game3D.tsx =====
------ sha256: faf9f8c095e37bdca8eddbbea31a4aab983555e38a8d5661bab45edcb5217f97 | bytes: 153336 -----
+----- sha256: e712e04a4bc51c2f8d418aabfad4acc65c6051269aa035635fac05b892bcabec | bytes: 186864 -----
 // ============================================================
 // Game Khám Phá 3D — bé chọn nhân vật, chọn nơi (Thành phố /
 // Đồng quê), đi lại bằng phím mũi tên hoặc nút mũi tên trên màn
@@ -4341,6 +4346,26 @@ export function App() {
 //   hat, cake ở khu công viên/cửa hàng), đồng quê +3 vật (lemon,
 //   frog, grape ở vườn cây/ao lớn) → Sổ Khám Phá 13/14 bạn mỗi map,
 //   dữ liệu đã lưu theo khóa cũ không đổi nên không mất.
+//
+// NÂNG CẤP ĐỢT 6 (yêu cầu của người dùng):
+// - Nhiệm vụ NÓI TIẾNG VIỆT LÀ CHÍNH: panel hiện câu tiếng Việt chữ
+//   lớn, cô đọc lệnh bằng tiếng Việt (TTS vi-VN; nghe-và-tìm vẫn đọc
+//   thêm câu tiếng Anh vì đó là nội dung nghe). Tên tiếng Anh của vật
+//   cần tìm CHỈ hiện thành dòng gợi ý nhỏ sau ~20 giây (gợi ý cấp 2)
+//   hoặc trong thẻ từ sau khi tìm đúng — lúc đó bé mới học từ Anh.
+// - BẢNG HIỆU TIẾNG ANH: MỖI vật/con vật ở cả 4 map có một bảng hiệu
+//   vẽ bằng canvas texture đặt ngay cạnh vật, quay về phía trung tâm
+//   (lối tiếp cận chính), ghi tên tiếng Anh chữ lớn; kiểu bảng theo
+//   map (đường phố ở Thành phố, gỗ ở Đồng quê/Bãi biển, biển chuồng
+//   thú 2 cột ở Sở thú). Tìm đúng → bảng hiệu nảy ăn mừng cùng vật.
+// - 3 DẠNG NHIỆM VỤ MỚI trộn vào 7 nhiệm vụ/lượt (mỗi lượt có ít
+//   nhất 1 dạng mới): 👣 Đi theo dấu chân (vệt dấu chân phát sáng
+//   hiện dần theo bước đi, TẮT mũi tên chỉ đường), 👯 Tìm bạn sinh
+//   đôi (một bản sao tạm xuất hiện thêm, phải bấm cả hai bạn), 🧺 Bỏ
+//   vào giỏ (giỏ cố định gần điểm xuất phát; theo màu — có bản sao
+//   tạm cùng màu để đủ số lượng — hoặc theo loại; vật đúng bay theo
+//   đường cong vào giỏ, hết nhiệm vụ vật trở về chỗ cũ). Sai không
+//   trừ sao; vật tìm được ở dạng mới vẫn ghi Sổ Khám Phá như thường.
 // ============================================================
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -4599,6 +4624,8 @@ const PRAISE_TEXTS = [
 ];
 const MISSIONS_PER_ROUND = 7; // Đợt 4: mỗi lượt 7 nhiệm vụ
 const WORLD_BOUND = 38; // Đợt 3: map rộng ~2.5 lần diện tích (bán kính đi được 24 → 38)
+/** Đợt 6: chiếc giỏ của nhiệm vụ "Bỏ vào giỏ" — cố định gần điểm xuất phát (bé bắt đầu ở 0, 9). */
+export const BASKET_POS = { x: -2.8, z: 11.5 };
 /** Quá thời gian này chưa tìm được → vật cần tìm tự phát sáng nhấp nháy gợi ý. */
 const HINT_AFTER_MS = 20000;
 
@@ -4821,12 +4848,19 @@ export function riddleFor(def: WorldObjectDef): string {
   return RIDDLE_VI[def.id] ?? `Bạn này là một bạn trong nơi này: ${def.vi}. Con đoán xem là bạn nào?`;
 }
 
-// ---------- Nhiệm vụ: các dạng pha trộn mỗi lượt (đợt 5 thêm Câu đố) ----------
+// ---------- Nhiệm vụ: các dạng pha trộn mỗi lượt (đợt 5 thêm Câu đố, đợt 6 thêm 3 dạng mới) ----------
 export type Mission =
   | { kind: "find"; def: WorldObjectDef }
   | { kind: "listen"; def: WorldObjectDef }
   | { kind: "hide"; def: WorldObjectDef }
   | { kind: "riddle"; def: WorldObjectDef; riddleVi: string }
+  /** Đợt 6: 👣 Đi theo dấu chân phát sáng tới vật — không có mũi tên chỉ đường. */
+  | { kind: "trail"; def: WorldObjectDef }
+  /** Đợt 6: 👯 Tìm bạn sinh đôi — twinDef là bản sao tạm ở vị trí khác, phải bấm cả hai. */
+  | { kind: "twin"; def: WorldObjectDef; twinDef: WorldObjectDef }
+  /** Đợt 6: 🧺 Bỏ vào giỏ — theo màu (spawnDefs là bản sao tạm cùng màu) hoặc theo loại. */
+  | { kind: "basket"; mode: "color"; colorId: ColorId; need: number; sample: WorldObjectDef; spawnDefs: WorldObjectDef[] }
+  | { kind: "basket"; mode: "group"; baseId: string; need: number; sample: WorldObjectDef; spawnDefs: WorldObjectDef[] }
   | { kind: "color"; baseId: string; colorId: ColorId; sample: WorldObjectDef; targetDef: WorldObjectDef }
   | { kind: "count"; baseId: string; need: number; sample: WorldObjectDef };
 
@@ -4848,6 +4882,58 @@ export function allDefs(m: MapDef): WorldObjectDef[] {
 
 function plural(en: string): string {
   return `${en}s`;
+}
+
+/**
+ * Đợt 6: vị trí rải rác cho BẢN SAO TẠM (bạn sinh đôi / vật cùng màu bỏ giỏ):
+ * cách vật gốc một đoạn, không chồng lên vật khác / giỏ / điểm xuất phát,
+ * vẫn trong biên map. Bản sao chỉ sống trong thời gian nhiệm vụ đó diễn ra.
+ */
+function scatterPos(
+  m: MapDef, src: WorldObjectDef, extra: { x: number; z: number }[],
+): { x: number; z: number } {
+  const clampB = (v: number) => Math.max(-33, Math.min(33, v));
+  const taken = [
+    ...allDefs(m).map((d) => ({ x: d.x, z: d.z })),
+    ...extra,
+    { x: BASKET_POS.x, z: BASKET_POS.z },
+    { x: 0, z: 9 },
+  ];
+  for (let i = 0; i < 14; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const dist = 10 + Math.random() * 10;
+    const x = clampB(src.x + Math.cos(ang) * dist);
+    const z = clampB(src.z + Math.sin(ang) * dist);
+    if (taken.every((t) => Math.hypot(t.x - x, t.z - z) >= 4)) return { x, z };
+  }
+  return { x: clampB(src.x + 12), z: clampB(src.z - 12) };
+}
+
+/** Đợt 6: dựng nhiệm vụ "Bỏ vào giỏ" theo dữ liệu sẵn có của map. */
+function buildBasketMission(m: MapDef): Mission | null {
+  const colorDefs = allDefs(m).filter((d) => groupOf(d) === m.colorBaseId && d.colorId);
+  const groupMembers = allDefs(m).filter((d) => groupOf(d) === m.countBaseId);
+  // Theo MÀU: mỗi màu trong map chỉ có sẵn 1 vật, nên sinh thêm bản sao tạm
+  // cùng màu rải rác quanh map để đủ số lượng bỏ giỏ (hết nhiệm vụ là biến mất).
+  if (colorDefs.length > 0 && (groupMembers.length < 3 || Math.random() < 0.5)) {
+    const src = colorDefs[Math.floor(Math.random() * colorDefs.length)]!;
+    const need = 2 + Math.floor(Math.random() * 2); // 2–3 vật
+    const placed: { x: number; z: number }[] = [];
+    const spawnDefs: WorldObjectDef[] = [];
+    for (let i = 0; i < need - 1; i++) {
+      const p = scatterPos(m, src, placed);
+      placed.push(p);
+      spawnDefs.push({ ...src, x: p.x, z: p.z });
+    }
+    return {
+      kind: "basket", mode: "color", colorId: src.colorId!, need, sample: src, spawnDefs,
+    };
+  }
+  // Theo LOẠI: bỏ N bạn cùng nhóm (nhóm đếm số của map luôn có 5 bạn).
+  const sample = m.objects.find((d) => d.id === m.countBaseId) ?? groupMembers[0];
+  if (!sample || groupMembers.length < 2) return null;
+  const need = Math.min(groupMembers.length, 2 + Math.floor(Math.random() * 2));
+  return { kind: "basket", mode: "group", baseId: m.countBaseId, need, sample, spawnDefs: [] };
 }
 
 /** Dựng 1 lượt 7 nhiệm vụ: 2 tìm vật + 1 màu + 1 đếm + 1 nghe-tìm + 1 tìm bạn trốn + 1 câu đố, xáo trộn. */
@@ -4885,23 +4971,62 @@ export function buildRound(m: MapDef): Mission[] {
 
   // Dự phòng: nếu thiếu nhiệm vụ màu/đếm thì bù bằng nhiệm vụ tìm vật.
   const used = new Set(
-    missions.map((x) => (x.kind === "color" || x.kind === "count" ? x.sample : x.def)),
+    missions.map((x) =>
+      x.kind === "color" || x.kind === "count" || x.kind === "basket" ? x.sample : x.def,
+    ),
   );
   for (const def of shuffle(m.objects)) {
     if (missions.length >= MISSIONS_PER_ROUND) break;
     if (!used.has(def)) missions.push({ kind: "find", def });
   }
-  return shuffle(missions).slice(0, MISSIONS_PER_ROUND);
+
+  // ĐỢT 6: 3 dạng chơi mới — mỗi lượt CHẮC CHẮN có ít nhất 1 dạng mới
+  // (thường là 1–2): thay ngẫu nhiên vài nhiệm vụ lõi bằng dạng mới.
+  const newKinds: Mission[] = [];
+  const trailDef = pool[5];
+  if (trailDef) newKinds.push({ kind: "trail", def: trailDef });
+  const twinSrc = pool[6];
+  if (twinSrc) {
+    const p = scatterPos(m, twinSrc, []);
+    newKinds.push({ kind: "twin", def: twinSrc, twinDef: { ...twinSrc, x: p.x, z: p.z } });
+  }
+  const basket = buildBasketMission(m);
+  if (basket) newKinds.push(basket);
+  const round = shuffle(missions).slice(0, MISSIONS_PER_ROUND);
+  const shuffledNew = shuffle(newKinds);
+  const swaps = Math.min(
+    shuffledNew.length,
+    Math.max(0, round.length - 1),
+    Math.random() < 0.55 ? 2 : 1,
+  );
+  const swapIdx = new Set<number>();
+  while (swapIdx.size < swaps) {
+    swapIdx.add(Math.floor(Math.random() * round.length));
+  }
+  let si = 0;
+  for (const idx of swapIdx) {
+    round[idx] = shuffledNew[si++]!;
+  }
+  if (round.length < MISSIONS_PER_ROUND && shuffledNew[si]) {
+    round.push(shuffledNew[si]!);
+  }
+  return shuffle(round);
 }
 
-/** Tiêu đề nhiệm vụ để hiển thị + đọc cho bé nghe. */
+/**
+ * Tiêu đề nhiệm vụ để hiển thị + đọc cho bé nghe.
+ * ĐỢT 6: tiếng Việt là nội dung CHÍNH (viTitle chữ lớn trên panel, cô đọc
+ * lệnh bằng tiếng Việt). Tên tiếng Anh của vật cần tìm KHÔNG hiện sẵn —
+ * chỉ có trong `enHint`, panel hiện nó thành dòng nhỏ khi gợi ý cấp 2 bật
+ * (sau ~20 giây), hoặc bé học nó qua bảng hiệu/thẻ từ khi tìm đúng.
+ */
 export function missionText(mis: Mission): {
-  enTitle: string; viTitle: string; emoji: string; speakVi: string; speakEn: string;
+  viTitle: string; enHint: string; emoji: string; speakVi: string; speakEn: string;
 } {
   if (mis.kind === "find") {
     return {
-      enTitle: `Find the ${mis.def.en}!`,
-      viTitle: `Hãy tìm và bấm vào: ${mis.def.vi}`,
+      viTitle: `Hãy tìm ${mis.def.vi}!`,
+      enHint: `Find the ${mis.def.en}!`,
       emoji: mis.def.emoji,
       speakVi: `Nhiệm vụ mới! Con hãy tìm và bấm vào ${mis.def.vi} nhé!`,
       speakEn: `Find the ${mis.def.en}!`,
@@ -4910,8 +5035,8 @@ export function missionText(mis: Mission): {
   if (mis.kind === "listen") {
     // Nghe và tìm: panel KHÔNG ghi tên vật — bé phải nghe cô đọc tiếng Anh.
     return {
-      enTitle: "Listen and find! 👂",
       viTitle: "Nghe cô đọc rồi tìm bạn đó nhé!",
+      enHint: `Find the ${mis.def.en}!`,
       emoji: "👂",
       speakVi: "Nhiệm vụ mới! Con nghe cô đọc tiếng Anh rồi tìm bạn đó nhé!",
       speakEn: `Find the ${mis.def.en}!`,
@@ -4920,8 +5045,8 @@ export function missionText(mis: Mission): {
   if (mis.kind === "hide") {
     // Tìm bạn đang trốn: không lộ danh tính trên panel.
     return {
-      enTitle: "Find the hiding friend! 🫣",
       viTitle: "Có một bạn đang trốn — tìm bạn ấy nhé!",
+      enHint: "",
       emoji: "🫣",
       speakVi: "Nhiệm vụ mới! Có một bạn đang trốn trong này, con tìm bạn ấy nhé!",
       speakEn: "Find the hiding friend!",
@@ -4930,28 +5055,68 @@ export function missionText(mis: Mission): {
   if (mis.kind === "riddle") {
     // Câu đố của cô: panel chỉ hiện ❓, đáp án chỉ có trong lời đọc tiếng Việt.
     return {
-      enTitle: "Riddle time! 🤔",
       viTitle: "Câu đố của cô — nghe kỹ rồi đoán nhé!",
+      enHint: "",
       emoji: "❓",
       speakVi: `Câu đố của cô! ${mis.riddleVi}`,
       speakEn: "Can you guess who I am?",
     };
   }
+  if (mis.kind === "trail") {
+    // 👣 Đi theo dấu chân: panel nói rõ vật bằng tiếng Việt, dấu chân dẫn đường.
+    return {
+      viTitle: `Đi theo dấu chân, tìm ${mis.def.vi} nào!`,
+      enHint: `Find the ${mis.def.en}!`,
+      emoji: "👣",
+      speakVi: `Nhiệm vụ mới! Con hãy đi theo dấu chân phát sáng trên mặt đất để tìm ${mis.def.vi} nhé!`,
+      speakEn: `Follow the footprints and find the ${mis.def.en}!`,
+    };
+  }
+  if (mis.kind === "twin") {
+    // 👯 Tìm bạn sinh đôi: phải bấm vào CẢ HAI bạn giống hệt nhau.
+    return {
+      viTitle: `Tìm cả hai bạn ${mis.def.vi} sinh đôi nhé!`,
+      enHint: `Find two ${plural(mis.def.en)}!`,
+      emoji: "👯",
+      speakVi: `Nhiệm vụ mới! Trong này có hai bạn ${mis.def.vi} sinh đôi giống hệt nhau. Con hãy tìm và bấm vào cả hai bạn nhé!`,
+      speakEn: `Find both twin ${plural(mis.def.en)}!`,
+    };
+  }
+  if (mis.kind === "basket") {
+    // 🧺 Bỏ vào giỏ: lệnh tiếng Việt theo tiêu chí màu hoặc loại.
+    if (mis.mode === "color") {
+      const c = COLORS[mis.colorId];
+      return {
+        viTitle: `Hãy bỏ ${mis.need} ${mis.sample.vi} màu ${c.vi} vào giỏ!`,
+        enHint: `Put ${mis.need} ${c.en} ${plural(mis.sample.en)} in the basket!`,
+        emoji: "🧺",
+        speakVi: `Nhiệm vụ mới! Con hãy bỏ ${mis.need} ${mis.sample.vi} màu ${c.vi} vào chiếc giỏ ở gần chỗ bắt đầu nhé!`,
+        speakEn: `Put ${mis.need} ${c.en} ${plural(mis.sample.en)} in the basket!`,
+      };
+    }
+    return {
+      viTitle: `Hãy bỏ ${mis.need} ${mis.sample.vi} vào giỏ!`,
+      enHint: `Put ${mis.need} ${plural(mis.sample.en)} in the basket!`,
+      emoji: "🧺",
+      speakVi: `Nhiệm vụ mới! Con hãy bỏ ${mis.need} ${mis.sample.vi} vào chiếc giỏ ở gần chỗ bắt đầu nhé!`,
+      speakEn: `Put ${mis.need} ${plural(mis.sample.en)} in the basket!`,
+    };
+  }
   if (mis.kind === "color") {
     const c = COLORS[mis.colorId];
     return {
-      enTitle: `Find the ${c.en} ${mis.sample.en}!`,
       viTitle: `Hãy tìm ${mis.sample.vi} màu ${c.vi}!`,
+      enHint: `Find the ${c.en} ${mis.sample.en}!`,
       emoji: mis.sample.emoji,
       speakVi: `Nhiệm vụ mới! Con hãy tìm ${mis.sample.vi} màu ${c.vi} nhé!`,
       speakEn: `Find the ${c.en} ${mis.sample.en}!`,
     };
   }
   return {
-    enTitle: `How many ${plural(mis.sample.en)}? Tap ${mis.need} ${plural(mis.sample.en)}!`,
-    viTitle: `Hãy bấm vào ${mis.need} ${mis.sample.vi} nhé!`,
+    viTitle: `Hãy chạm ${mis.need} ${mis.sample.vi} nhé!`,
+    enHint: `Tap ${mis.need} ${plural(mis.sample.en)}!`,
     emoji: mis.sample.emoji,
-    speakVi: `Nhiệm vụ mới! Con hãy bấm vào ${mis.need} ${mis.sample.vi} nhé!`,
+    speakVi: `Nhiệm vụ mới! Con hãy chạm vào ${mis.need} ${mis.sample.vi} nhé!`,
     speakEn: `How many ${plural(mis.sample.en)}? Tap ${mis.need} ${plural(mis.sample.en)}!`,
   };
 }
@@ -4960,7 +5125,24 @@ export function missionText(mis: Mission): {
 export function missionTargetDef(
   mis: Mission, counted: ReadonlySet<string>, m: MapDef,
 ): WorldObjectDef | null {
-  if (mis.kind === "find" || mis.kind === "listen" || mis.kind === "hide" || mis.kind === "riddle") return mis.def;
+  if (
+    mis.kind === "find" || mis.kind === "listen" || mis.kind === "hide" ||
+    mis.kind === "riddle" || mis.kind === "trail"
+  ) return mis.def;
+  if (mis.kind === "twin") {
+    // Dẫn tới bạn sinh đôi CHƯA được bấm (counted = tập khóa đã tìm của nhiệm vụ này).
+    if (counted.has(instKey(mis.def)) && !counted.has(instKey(mis.twinDef))) return mis.twinDef;
+    return mis.def;
+  }
+  if (mis.kind === "basket") {
+    const all = [...allDefs(m), ...mis.spawnDefs];
+    if (mis.mode === "color") {
+      const cid = mis.colorId;
+      return all.find((d) => d.colorId === cid && !counted.has(instKey(d))) ?? null;
+    }
+    const baseId = mis.baseId;
+    return all.find((d) => groupOf(d) === baseId && !counted.has(instKey(d))) ?? null;
+  }
   if (mis.kind === "color") return mis.targetDef;
   return (
     allDefs(m).find((d) => groupOf(d) === mis.baseId && !counted.has(instKey(d))) ?? null
@@ -6066,6 +6248,117 @@ function buildFor(def: WorldObjectDef): THREE.Group | null {
   return b ? b() : null;
 }
 
+// ---------- ĐỢT 6: BẢNG HIỆU TIẾNG ANH cho từng vật/con vật ----------
+/** Phong cách bảng theo nơi: đường phố (Thành phố) / gỗ (Đồng quê, Bãi biển) / biển chuồng thú (Sở thú). */
+const SIGN_STYLES: Record<MapId, { bg: string; border: string; text: string; post: number; back: number }> = {
+  city: { bg: "#ffffff", border: "#3d7bff", text: "#274b8f", post: 0x8a8f98, back: 0xdfe7f2 },
+  countryside: { bg: "#fdf3d0", border: "#8a5a2b", text: "#6b4218", post: 0x8a5a2b, back: 0xa9743f },
+  beach: { bg: "#ffffff", border: "#0e9594", text: "#0b6e6d", post: 0xb08968, back: 0xd9b48c },
+  zoo: { bg: "#f4f9e4", border: "#3fa34d", text: "#27632f", post: 0x6f9e4f, back: 0x8a5a2b },
+};
+/** Vật to (voi, ngựa, xe lớn, cây…) → bảng hiệu đặt xa hơn và to hơn một chút. */
+const BIG_SIGN_IDS = new Set([
+  "elephant", "horse", "bus", "truck", "boat", "tree", "lion", "tiger", "zebra", "goat",
+]);
+
+/** Vẽ chữ tên tiếng Anh lên canvas: chữ Baloo thật lớn, tự co cỡ cho vừa bảng. */
+function makeSignTexture(word: string, mapId: MapId): THREE.CanvasTexture {
+  const st = SIGN_STYLES[mapId];
+  const c = document.createElement("canvas");
+  c.width = 512; c.height = 256;
+  const g = c.getContext("2d")!;
+  g.beginPath();
+  g.roundRect(10, 10, 492, 236, 38);
+  g.fillStyle = st.bg;
+  g.fill();
+  g.lineWidth = 14;
+  g.strokeStyle = st.border;
+  g.stroke();
+  g.fillStyle = st.text;
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  let size = 132;
+  g.font = `800 ${size}px 'Baloo 2', 'Nunito', sans-serif`;
+  while (g.measureText(word).width > 436 && size > 42) {
+    size -= 10;
+    g.font = `800 ${size}px 'Baloo 2', 'Nunito', sans-serif`;
+  }
+  g.fillText(word, 256, 136);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  return tex;
+}
+
+/** Một bảng hiệu đứng: mặt trước + mặt sau cùng đọc được, cột theo phong cách map. */
+function buildSign(mapId: MapId, tex: THREE.CanvasTexture): THREE.Group {
+  const st = SIGN_STYLES[mapId];
+  const grp = new THREE.Group();
+  const boardMat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55 });
+  const back = new THREE.Mesh(new THREE.BoxGeometry(2.06, 1.06, 0.07), mat(st.back));
+  back.position.y = 1.66;
+  back.castShadow = true;
+  grp.add(back);
+  const front = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 1.0), boardMat);
+  front.position.set(0, 1.66, 0.045);
+  grp.add(front);
+  const backFace = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 1.0), boardMat);
+  backFace.position.set(0, 1.66, -0.045);
+  backFace.rotation.y = Math.PI;
+  grp.add(backFace);
+  const postGeo = new THREE.CylinderGeometry(0.07, 0.09, 1.2, 10);
+  if (mapId === "zoo") {
+    // Biển chuồng thú: hai cột hai bên như bảng gắn trên hàng rào chuồng.
+    for (const px of [-0.88, 0.88]) {
+      const post = new THREE.Mesh(postGeo, mat(st.post));
+      post.position.set(px, 0.6, 0);
+      post.castShadow = true;
+      grp.add(post);
+    }
+  } else {
+    const post = new THREE.Mesh(postGeo, mat(st.post));
+    post.position.set(0, 0.6, 0);
+    post.castShadow = true;
+    grp.add(post);
+  }
+  return grp;
+}
+
+// ---------- ĐỢT 6: CHIẾC GIỎ của nhiệm vụ "Bỏ vào giỏ" ----------
+function buildBasket(): THREE.Group {
+  const g = new THREE.Group();
+  const bodyMat = mat(0xb08968);
+  bodyMat.side = THREE.DoubleSide;
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.88, 0.62, 0.95, 18, 1, true), bodyMat,
+  );
+  body.position.y = 0.48;
+  body.castShadow = true;
+  g.add(body);
+  const bottom = new THREE.Mesh(new THREE.CircleGeometry(0.62, 18), mat(0x8a5a2b));
+  bottom.rotation.x = -Math.PI / 2;
+  bottom.position.y = 0.03;
+  g.add(bottom);
+  const inner = new THREE.Mesh(
+    new THREE.CircleGeometry(0.8, 18),
+    new THREE.MeshStandardMaterial({ color: 0x5d3d1e, roughness: 1 }),
+  );
+  inner.rotation.x = -Math.PI / 2;
+  inner.position.y = 0.3;
+  g.add(inner);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.88, 0.07, 10, 26), mat(0x8a5a2b));
+  rim.rotation.x = Math.PI / 2;
+  rim.position.y = 0.96;
+  g.add(rim);
+  for (const y of [0.28, 0.58]) {
+    const band = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.03, 8, 26), mat(0x8a5a2b));
+    band.rotation.x = Math.PI / 2;
+    band.position.y = y;
+    g.add(band);
+  }
+  return g;
+}
+
 /** Chim trang trí bay vòng trên trời (không bấm được). */
 function buildBird(color: number): { group: THREE.Group; wingL: THREE.Group; wingR: THREE.Group } {
   const group = new THREE.Group();
@@ -6105,6 +6398,9 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
   const [missionIndex, setMissionIndex] = useState(0);
   const [foundCount, setFoundCount] = useState(0);
   const [countTapped, setCountTapped] = useState(0);
+  // Đợt 6: tiến độ nhiệm vụ sinh đôi (0–2) và bỏ giỏ (0–need)
+  const [twinTapped, setTwinTapped] = useState(0);
+  const [basketCount, setBasketCount] = useState(0);
   const [wordCard, setWordCard] = useState<WorldObjectDef | null>(null);
   const [nearDef, setNearDef] = useState<WorldObjectDef | null>(null);
   const [feedback, setFeedback] = useState<{ kind: "good" | "try"; text: string } | null>(null);
@@ -6139,6 +6435,22 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
   const arrowInnerRef = useRef<HTMLSpanElement | null>(null);
   // Đợt 4: góc mũi tên chỉ đường hiện tại — xoay dần về hướng đích (không giật)
   const arrowAngleRef = useRef<number | null>(null);
+  // Đợt 6: cầu nối React → vòng lặp 3D cho 3 cơ chế chơi mới
+  const twinKeysRef = useRef<Set<string>>(new Set());
+  const basketKeysRef = useRef<Set<string>>(new Set());
+  /** Vật đích của nhiệm vụ dấu chân (vòng lặp tự vẽ vệt dấu chân tới đó). */
+  const trailTargetRef = useRef<{ key: string; x: number; z: number } | null>(null);
+  /** True khi nhiệm vụ dấu chân đang chạy → vòng lặp TẮT mũi tên chỉ đường. */
+  const arrowOffRef = useRef(false);
+  /** Các bản sao tạm (sinh đôi / vật cùng màu bỏ giỏ) vòng lặp cần dựng trong cảnh. */
+  const clonesRef = useRef<WorldObjectDef[]>([]);
+  const cloneKeysRef = useRef<Set<string>>(new Set());
+  /** Vật đang bay vào giỏ: khóa vật → thời điểm bắt đầu bay. */
+  const flyRef = useRef<Map<string, number>>(new Map());
+  /** Đặt true khi đổi nhiệm vụ → vòng lặp trả các vật đã bỏ giỏ về chỗ cũ. */
+  const restoreBasketRef = useRef(false);
+  /** True khi nhiệm vụ bỏ giỏ đang chạy → vòng sáng dưới giỏ nhấp nháy. */
+  const basketActiveRef = useRef(false);
   // Đợt 4: chuyển cảnh sang map tiếp theo sau khi xong 1 lượt nhiệm vụ
   const [transitionTo, setTransitionTo] = useState<MapDef | null>(null);
   const recRef = useRef<SpeechRecognitionLike | null>(null);
@@ -6170,9 +6482,16 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
     timersRef.current.forEach((t) => window.clearTimeout(t));
   }, []);
 
-  // Vật mà mũi tên chỉ đường dẫn tới + khóa vật phát sáng gợi ý
+  // Vật mà mũi tên chỉ đường dẫn tới + khóa vật phát sáng gợi ý.
+  // Đợt 6: mỗi dạng nhiệm vụ dùng tập "đã bấm" riêng (đếm / sinh đôi / bỏ giỏ).
+  const guideSet =
+    mission?.kind === "twin"
+      ? twinKeysRef.current
+      : mission?.kind === "basket"
+        ? basketKeysRef.current
+        : countedKeysRef.current;
   const guideTargetDef =
-    mission && mapDef ? missionTargetDef(mission, countedKeysRef.current, mapDef) : null;
+    mission && mapDef ? missionTargetDef(mission, guideSet, mapDef) : null;
   useEffect(() => {
     guideRef.current =
       guideTargetDef && !guideTargetDef.inSky
@@ -6187,9 +6506,42 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
   useEffect(() => {
     countedKeysRef.current = new Set();
     setCountTapped(0);
+    twinKeysRef.current = new Set();
+    setTwinTapped(0);
+    basketKeysRef.current = new Set();
+    setBasketCount(0);
     setHintActive(false);
     missionStartRef.current = Date.now();
   }, [missionIndex, missions]);
+
+  // Đợt 6: mỗi nhiệm vụ mới → báo cho vòng lặp 3D biết cơ chế nào đang chạy
+  // (vệt dấu chân tới đâu, tắt mũi tên hay không, bản sao tạm nào cần dựng,
+  // giỏ có đang "mở" không) + trả các vật đã bỏ giỏ của nhiệm vụ trước về chỗ cũ.
+  useEffect(() => {
+    if (!mission) {
+      trailTargetRef.current = null;
+      clonesRef.current = [];
+      cloneKeysRef.current = new Set();
+      arrowOffRef.current = false;
+      basketActiveRef.current = false;
+      return;
+    }
+    arrowOffRef.current = mission.kind === "trail";
+    trailTargetRef.current =
+      mission.kind === "trail"
+        ? { key: instKey(mission.def), x: mission.def.x, z: mission.def.z }
+        : null;
+    const clones =
+      mission.kind === "twin"
+        ? [mission.twinDef]
+        : mission.kind === "basket"
+          ? mission.spawnDefs
+          : [];
+    clonesRef.current = clones;
+    cloneKeysRef.current = new Set(clones.map(instKey));
+    basketActiveRef.current = mission.kind === "basket";
+    restoreBasketRef.current = true;
+  }, [mission, missionIndex, missions]);
 
   // Quá 20 giây chưa xong nhiệm vụ → bật gợi ý phát sáng
   useEffect(() => {
@@ -6220,7 +6572,11 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
       lastSpokenMissionRef.current = key;
       const t = missionText(mission);
       speakTimer = window.setTimeout(() => {
-        speakBilingual(t.speakVi, t.speakEn);
+        // ĐỢT 6: lệnh nhiệm vụ đọc BẰNG TIẾNG VIỆT là chính. Riêng dạng
+        // "Nghe và tìm" vẫn đọc nối tiếp câu tiếng Anh vì đó là nội dung
+        // bé phải nghe để đi tìm.
+        if (mission.kind === "listen") speakBilingual(t.speakVi, t.speakEn);
+        else speakDevice(t.speakVi, "vi-VN");
       }, 450);
     }
     return () => {
@@ -6322,8 +6678,15 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
     playWordAudioChained(def);
     setWordCard(def);
 
-    // Sổ Khám Phá: chỉ vật chính của map mới được ghi vào sổ (lưu bền trên server)
-    if (mapDef && mapDef.objects.includes(def)) {
+    // Sổ Khám Phá: chỉ vật chính của map mới được ghi vào sổ (lưu bền trên server).
+    // Đợt 6: bản sao tạm của một vật chính (bạn sinh đôi / vật bỏ giỏ) cũng
+    // được tính là đã khám phá vật chính đó.
+    const isBookObject =
+      mapDef &&
+      (mapDef.objects.includes(def) ||
+        (cloneKeysRef.current.has(key) &&
+          mapDef.objects.some((ob) => bookKey(ob) === bookKey(def))));
+    if (mapDef && isBookObject) {
       const objKey = bookKey(def);
       const already = discovered.get(mapDef.id)?.has(objKey) ?? false;
       if (!already) {
@@ -6345,28 +6708,111 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
 
     if (finished || celebrating || !mission) return;
 
-    if (mission.kind === "find" || mission.kind === "listen" || mission.kind === "hide" || mission.kind === "riddle") {
+    if (mission.kind === "find" || mission.kind === "listen" || mission.kind === "hide" || mission.kind === "riddle" || mission.kind === "trail") {
       if (def === mission.def) {
         completeCurrentMission(
           mission.kind === "hide"
             ? `Tìm thấy rồi! Bạn ${def.en} — ${def.vi} trốn ở đây này! 🎉`
             : mission.kind === "riddle"
               ? `Đoán đúng rồi! Đáp án câu đố là ${def.en} — ${def.vi}! Con suy luận giỏi quá! 🎉`
-              : `Đúng rồi! Đây là ${def.en} — ${def.vi}! 🎉`,
+              : mission.kind === "trail"
+                ? `Con đi theo dấu chân giỏi quá! Đây là ${def.en} — ${def.vi}! 🎉`
+                : `Đúng rồi! Đây là ${def.en} — ${def.vi}! 🎉`,
         );
       } else {
         setFeedback({
           kind: "try",
           text:
             mission.kind === "find"
-              ? `Đây là ${def.en} — ${def.vi}. Nhiệm vụ tìm ${mission.def.en} cơ, con thử lại nhé!`
+              ? `Đây là ${def.en} — ${def.vi}. Nhiệm vụ tìm ${mission.def.vi} cơ, con thử lại nhé!`
               : mission.kind === "listen"
                 ? `Đây là ${def.en} — ${def.vi}. Con bấm nút loa nghe lại cô đọc rồi tìm tiếp nhé!`
                 : mission.kind === "riddle"
                   ? `Đây là ${def.en} — ${def.vi}. Chưa phải đáp án câu đố đâu, con bấm loa nghe lại câu đố rồi đoán tiếp nhé!`
-                  : `Đây là ${def.en} — ${def.vi}. Bạn đang trốn chưa phải bạn này đâu, con tìm tiếp nhé!`,
+                  : mission.kind === "trail"
+                    ? `Đây là ${def.en} — ${def.vi}. Con cứ đi theo dấu chân phát sáng là tới bạn ${mission.def.vi} nhé!`
+                    : `Đây là ${def.en} — ${def.vi}. Bạn đang trốn chưa phải bạn này đâu, con tìm tiếp nhé!`,
         });
         tryAgainAudio();
+      }
+      return;
+    }
+
+    // ĐỢT 6: 👯 Tìm bạn sinh đôi — phải bấm vào CẢ HAI bạn giống hệt nhau.
+    if (mission.kind === "twin") {
+      const isTwin = def === mission.def || def === mission.twinDef;
+      if (!isTwin) {
+        setFeedback({
+          kind: "try",
+          text: `Đây là ${def.en} — ${def.vi}. Nhiệm vụ tìm hai bạn ${mission.def.vi} sinh đôi cơ, con tìm tiếp nhé!`,
+        });
+        tryAgainAudio();
+        return;
+      }
+      if (twinKeysRef.current.has(key)) {
+        setFeedback({
+          kind: "try",
+          text: `Bạn ${def.en} này con tìm thấy rồi! Còn một bạn sinh đôi nữa đó! 👯`,
+        });
+        return;
+      }
+      twinKeysRef.current.add(key);
+      const nTwin = twinKeysRef.current.size;
+      setTwinTapped(nTwin);
+      if (nTwin >= 2) {
+        completeCurrentMission(
+          `Tìm đủ cả hai bạn ${def.en} — ${def.vi} sinh đôi rồi! Con tinh mắt quá! 🎉`,
+        );
+      } else {
+        setFeedback({
+          kind: "good",
+          text: `Tìm thấy 1 bạn ${def.en} rồi (1/2)! Còn 1 bạn sinh đôi nữa đang chờ con! 👯`,
+        });
+      }
+      return;
+    }
+
+    // ĐỢT 6: 🧺 Bỏ vào giỏ — vật đúng bay vào giỏ, vật sai chỉ rung + cô nhắc lại lệnh.
+    if (mission.kind === "basket") {
+      const matches =
+        mission.mode === "color"
+          ? def.colorId === mission.colorId
+          : groupOf(def) === mission.baseId;
+      if (!matches) {
+        setFeedback({
+          kind: "try",
+          text:
+            mission.mode === "color"
+              ? `Đây là ${def.en} — ${def.vi}. Giỏ đang cần ${mission.sample.vi} màu ${COLORS[mission.colorId].vi} cơ, con tìm tiếp nhé!`
+              : `Đây là ${def.en} — ${def.vi}. Giỏ đang cần ${mission.sample.vi} cơ, con tìm tiếp nhé!`,
+        });
+        // Cô nhắc lại lệnh bằng tiếng Việt (sau khi bé nghe xong tên vật vừa bấm).
+        const viCmd = missionText(mission).speakVi;
+        later(() => speakDevice(viCmd, "vi-VN"), 1500);
+        return;
+      }
+      if (basketKeysRef.current.has(key)) {
+        setFeedback({
+          kind: "try",
+          text: `Bạn ${def.en} này đã ở trong giỏ rồi! Con tìm bạn khác nhé! 🧺`,
+        });
+        return;
+      }
+      basketKeysRef.current.add(key);
+      flyRef.current.set(key, performance.now());
+      const nBasket = basketKeysRef.current.size;
+      setBasketCount(nBasket);
+      const numB = NUMBERS[nBasket - 1];
+      if (numB) playKeyAudio(numB.key, numB.en, "en-US");
+      if (nBasket >= mission.need) {
+        completeCurrentMission(
+          `Bỏ đủ ${nBasket} bạn vào giỏ rồi! Con khéo tay quá! 🧺🎉`,
+        );
+      } else {
+        setFeedback({
+          kind: "good",
+          text: `Vào giỏ! 🧺 Đã bỏ ${nBasket}/${mission.need} — con tìm tiếp nhé!`,
+        });
       }
       return;
     }
@@ -6446,7 +6892,10 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
   const speakMission = () => {
     if (!mission) return;
     const t = missionText(mission);
-    speakBilingual(t.speakVi, t.speakEn);
+    // ĐỢT 6: nút "Nghe lại nhiệm vụ" đọc lại câu TIẾNG VIỆT (dạng nghe-và-tìm
+    // đọc thêm câu tiếng Anh như lúc ra nhiệm vụ).
+    if (mission.kind === "listen") speakBilingual(t.speakVi, t.speakEn);
+    else speakDevice(t.speakVi, "vi-VN");
   };
 
   // ---------- "Nói theo cô" trong thẻ từ ----------
@@ -6741,6 +7190,122 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
     }
     const byKey = new Map(entries.map((e) => [instKey(e.def), e]));
 
+    // ĐỢT 6: BẢNG HIỆU TIẾNG ANH cho MỖI vật/con vật — đặt ngay cạnh vật,
+    // lệch về phía trung tâm map (hướng bé tiếp cận chính), mặt bảng quay
+    // về phía đó. Texture vẽ 1 lần cho mỗi từ (dùng chung cho vật phụ /
+    // bản sao cùng tên); bảng không nằm trong clickTargets nên không cản
+    // việc bấm vào vật, cũng không che vật.
+    const signTexCache = new Map<string, THREE.CanvasTexture>();
+    const signByKey = new Map<string, THREE.Group>();
+    const addSign = (def: WorldObjectDef) => {
+      let tex = signTexCache.get(def.en);
+      if (!tex) {
+        tex = makeSignTexture(def.en, mapDef.id);
+        signTexCache.set(def.en, tex);
+      }
+      const sign = buildSign(mapDef.id, tex);
+      const len = Math.hypot(def.x, def.z) || 1;
+      const dirx = -def.x / len;
+      const dirz = -def.z / len;
+      const big = BIG_SIGN_IDS.has(def.id);
+      const dist = big ? 3.1 : 2.3;
+      sign.position.set(def.x + dirx * dist, 0, def.z + dirz * dist);
+      sign.rotation.y = Math.atan2(dirx, dirz);
+      const baseScale = big ? 1.12 : 1;
+      sign.scale.setScalar(baseScale);
+      sign.userData.baseScale = baseScale;
+      scene.add(sign);
+      signByKey.set(instKey(def), sign);
+      return sign;
+    };
+    for (const def of allDefs(mapDef)) addSign(def);
+
+    // ĐỢT 6: chiếc giỏ cố định gần điểm xuất phát cho nhiệm vụ "Bỏ vào giỏ"
+    // (luôn có mặt như một vật trang trí; nhiệm vụ chạy thì vòng sáng nhấp nháy).
+    const basketGroup = buildBasket();
+    basketGroup.position.set(BASKET_POS.x, 0, BASKET_POS.z);
+    scene.add(basketGroup);
+    const basketRing = makeRing(0x2ec4b6);
+    basketRing.position.set(BASKET_POS.x, 0.06, BASKET_POS.z);
+    basketRing.scale.setScalar(0.62);
+    scene.add(basketRing);
+
+    // ĐỢT 6: BẢN SAO TẠM (bạn sinh đôi / vật cùng màu bỏ giỏ) — vòng lặp tự
+    // dựng/gỡ theo clonesRef mà React cập nhật mỗi khi nhiệm vụ thay đổi.
+    let cloneEntries: ObjEntry[] = [];
+    let cloneSig = "";
+    const disposeGroup = (grp: THREE.Group) => {
+      grp.traverse((c) => {
+        const mesh = c as THREE.Mesh;
+        if (mesh.geometry) mesh.geometry.dispose();
+        const mm = mesh.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(mm)) mm.forEach((x) => x.dispose());
+        else if (mm) mm.dispose();
+      });
+    };
+    const syncClones = () => {
+      const want = clonesRef.current;
+      const sig = want.map(instKey).join(",");
+      if (sig === cloneSig) return;
+      cloneSig = sig;
+      for (const ce of cloneEntries) {
+        const ck = instKey(ce.def);
+        scene.remove(ce.group);
+        disposeGroup(ce.group);
+        const sgn = signByKey.get(ck);
+        if (sgn) {
+          scene.remove(sgn);
+          disposeGroup(sgn); // texture dùng chung trong cache nên chỉ xả geometry/material
+          signByKey.delete(ck);
+        }
+        const ei = entries.indexOf(ce);
+        if (ei >= 0) entries.splice(ei, 1);
+        const ci = clickTargets.indexOf(ce.group);
+        if (ci >= 0) clickTargets.splice(ci, 1);
+        byKey.delete(ck);
+      }
+      cloneEntries = [];
+      for (const def of want) {
+        const group = buildFor(def);
+        if (!group) continue;
+        group.position.set(def.x, 0, def.z);
+        group.userData.objKey = instKey(def);
+        const ring = makeRing(0xffc53d);
+        group.add(ring);
+        group.traverse((c) => {
+          c.userData.objKey = instKey(def);
+        });
+        scene.add(group);
+        const entry: ObjEntry = { def, group, ring };
+        entries.push(entry);
+        clickTargets.push(group);
+        byKey.set(instKey(def), entry);
+        cloneEntries.push(entry);
+        addSign(def); // bản sao cũng có bảng hiệu tiếng Anh như vật thường
+      }
+    };
+
+    // ĐỢT 6: VỆT DẤU CHÂN phát sáng cho nhiệm vụ 👣 — hiện dần theo bước đi.
+    const trailGroup = new THREE.Group();
+    scene.add(trailGroup);
+    const printGeo = new THREE.CircleGeometry(0.3, 14);
+    const printMat = new THREE.MeshBasicMaterial({
+      color: 0xffc53d, transparent: true, opacity: 0.95, depthWrite: false,
+    });
+    let trailKey: string | null = null;
+    let trailPts: { x: number; z: number; mesh: THREE.Mesh }[] = [];
+    let trailShown = 0;
+    const clearTrail = () => {
+      for (const p of trailPts) trailGroup.remove(p.mesh);
+      trailPts = [];
+      trailShown = 0;
+      trailKey = null;
+    };
+
+    // ĐỢT 6: vật đang bay / đã nằm trong giỏ của nhiệm vụ 🧺.
+    const flyStart = new Map<string, THREE.Vector3>();
+    const basketHidden = new Set<string>();
+
     // Nhân vật của bé
     const player = buildCharacter(character);
     player.position.set(0, 0, 9);
@@ -6852,6 +7417,55 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
       try {
         const dt = Math.min(clock.getDelta(), 0.05);
         elapsed += dt;
+
+        // ĐỢT 6: đồng bộ bản sao tạm theo nhiệm vụ hiện tại (rất rẻ: so chữ ký)
+        syncClones();
+
+        // ĐỢT 6: đổi nhiệm vụ → trả các vật đã bỏ giỏ về vị trí cũ, hiện lại.
+        if (restoreBasketRef.current) {
+          restoreBasketRef.current = false;
+          const restoreOne = (key: string) => {
+            const e = byKey.get(key);
+            if (e) {
+              e.group.visible = true;
+              e.group.position.set(e.def.x, 0, e.def.z);
+              e.group.rotation.y = 0;
+            }
+          };
+          for (const key of basketHidden) restoreOne(key);
+          basketHidden.clear();
+          for (const key of [...flyRef.current.keys()]) restoreOne(key);
+          flyRef.current.clear();
+          flyStart.clear();
+        }
+
+        // ĐỢT 6: vật bay theo đường cong parabol vào giỏ 🧺
+        for (const [key, t0] of [...flyRef.current]) {
+          const e = byKey.get(key);
+          if (!e) {
+            flyRef.current.delete(key);
+            continue;
+          }
+          if (!flyStart.has(key)) flyStart.set(key, e.group.position.clone());
+          const from = flyStart.get(key)!;
+          const t = Math.min(1, (performance.now() - t0) / 950);
+          e.group.position.set(
+            from.x + (BASKET_POS.x - from.x) * t,
+            from.y + (1.15 - from.y) * t + Math.sin(t * Math.PI) * 2.4,
+            from.z + (BASKET_POS.z - from.z) * t,
+          );
+          e.group.rotation.y += dt * 6;
+          if (t >= 1) {
+            e.group.visible = false;
+            e.group.rotation.y = 0;
+            basketHidden.add(key);
+            flyRef.current.delete(key);
+            flyStart.delete(key);
+          }
+        }
+        // Vòng sáng dưới giỏ: nhiệm vụ bỏ giỏ đang chạy thì nhấp nháy mời gọi.
+        (basketRing.material as THREE.MeshBasicMaterial).opacity =
+          basketActiveRef.current ? 0.7 + 0.3 * Math.sin(elapsed * 5) : 0.22;
         // Di chuyển THEO GÓC CAMERA: ↑ luôn là đi tới phía trước màn hình,
         // ← → luôn là sang trái/phải màn hình — như đôi mắt bé nhìn.
         const keys = keysRef.current;
@@ -6982,12 +7596,62 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
           }
         }
 
+        // ĐỢT 6: 👣 VỆT DẤU CHÂN — dựng vệt từ chỗ bé đang đứng tới vật cần
+        // tìm khi nhiệm vụ bắt đầu; dấu tiếp theo chỉ hiện khi bé đi tới gần
+        // dấu hiện tại, để bé tự lần theo dấu chân (không có mũi tên).
+        const tt = trailTargetRef.current;
+        if (!tt) {
+          if (trailKey) clearTrail();
+        } else if (tt.key !== trailKey) {
+          clearTrail();
+          trailKey = tt.key;
+          const sx = playerPos.x;
+          const sz = playerPos.z;
+          const dx = tt.x - sx;
+          const dz = tt.z - sz;
+          const dist = Math.hypot(dx, dz) || 1;
+          const ux = dx / dist;
+          const uz = dz / dist;
+          const px = -uz;
+          const pz = ux;
+          const n = Math.max(2, Math.min(16, Math.round(dist / 2.1)));
+          for (let i = 1; i <= n; i++) {
+            const t = i / (n + 0.5);
+            const off = (i % 2 === 0 ? 1 : -1) * 0.3; // chân trái / chân phải
+            const x = sx + dx * t + px * off;
+            const z = sz + dz * t + pz * off;
+            const mesh = new THREE.Mesh(printGeo, printMat);
+            mesh.rotation.set(-Math.PI / 2, 0, Math.atan2(ux, uz));
+            mesh.position.set(x, 0.06, z);
+            mesh.scale.set(0.8, 1.3, 1);
+            mesh.visible = i === 1;
+            trailGroup.add(mesh);
+            trailPts.push({ x, z, mesh });
+          }
+          trailShown = 1;
+        }
+        if (tt && trailPts.length > 0) {
+          const cur = trailPts[Math.min(trailShown, trailPts.length) - 1];
+          if (cur) {
+            const pulse = 1 + 0.16 * Math.sin(elapsed * 6);
+            cur.mesh.scale.set(0.8 * pulse, 1.3 * pulse, 1);
+          }
+          if (trailShown < trailPts.length) {
+            const last = trailPts[trailShown - 1]!;
+            if (Math.hypot(playerPos.x - last.x, playerPos.z - last.z) < 1.9) {
+              trailPts[trailShown]!.mesh.visible = true;
+              trailShown++;
+            }
+          }
+        }
+
         // Mũi tên chỉ đường: xoay theo hướng từ nhân vật tới vật của nhiệm vụ
+        // (nhiệm vụ 👣 dấu chân thì TẮT hẳn để bé tự lần theo dấu chân).
         const gTarget = guideRef.current;
         const aWrap = arrowWrapRef.current;
         const aInner = arrowInnerRef.current;
         if (aWrap && aInner) {
-          if (!gTarget) {
+          if (!gTarget || arrowOffRef.current) {
             aWrap.style.opacity = "0";
           } else {
             const adx = gTarget.x - playerPos.x;
@@ -7029,10 +7693,12 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
             nearest = entry;
           }
           const key = instKey(entry.def);
+          // Đợt 6: vật đang bay vào giỏ / đã ở trong giỏ → không chạy hiệu ứng tại chỗ
+          const busy = flyRef.current.has(key) || basketHidden.has(key);
           // Hiệu ứng nảy khi được bấm chọn / phát sáng nhấp nháy khi là gợi ý
           let scaleF = 1;
           const bStart = bounceRef.current.get(key);
-          if (bStart) {
+          if (bStart && !busy) {
             const t = (performance.now() - bStart) / 650;
             if (t >= 1) {
               bounceRef.current.delete(key);
@@ -7051,8 +7717,22 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
             scaleF = 1 + 0.17 * Math.sin(elapsed * 7);
           }
           entry.group.scale.setScalar(scaleF);
+          // ĐỢT 6: BẢNG HIỆU ăn mừng cùng vật — nảy nhẹ khi vật vừa được bấm
+          // đúng, nhấp nháy khi vật đang là gợi ý phát sáng.
+          const sign = signByKey.get(key);
+          if (sign) {
+            let sPulse = 1;
+            if (bStart && !busy) {
+              const st = (performance.now() - bStart) / 650;
+              if (st < 1) sPulse = 1 + 0.13 * Math.sin(st * Math.PI);
+            }
+            if (hintKeyRef.current === key) {
+              sPulse *= 1 + 0.07 * Math.sin(elapsed * 7);
+            }
+            sign.scale.setScalar(((sign.userData.baseScale as number) ?? 1) * sPulse);
+          }
           if (entry.def.id === "sun") entry.group.rotation.z += dt * 0.25;
-          if (entry.def.id === "fish") {
+          if (entry.def.id === "fish" && !busy) {
             // Cá thỉnh thoảng nhảy vọt lên khỏi mặt hồ rồi rơi xuống
             const ph = elapsed % 3.8;
             if (ph < 1) {
@@ -7065,7 +7745,9 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
           }
           // Chuyển động riêng của con vật cho cảnh sống động (đợt 3)
           const ph2 = entry.def.x * 1.7 + entry.def.z * 2.3;
-          if (entry.def.id === "chicken") {
+          if (busy) {
+            // Đang bay vào giỏ / đã ở trong giỏ: bỏ qua chuyển động riêng.
+          } else if (entry.def.id === "chicken") {
             // Gà mổ thóc: cúi xuống từng nhịp ngắn
             const peck = Math.pow(Math.max(0, Math.sin(elapsed * 2.1 + ph2)), 6);
             entry.group.rotation.x = peck * 0.38;
@@ -7095,7 +7777,7 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
           // (chuông rung leng keng, bóng nảy, xe chạy một đoạn, sách mở ra,
           // cây rung quả, cá nhảy cao, khỉ nhảy, vịt nhảy mừng…).
           const rb = bounceRef.current.get(key);
-          if (rb) {
+          if (rb && !busy) {
             const rt = (performance.now() - rb) / 650;
             if (rt >= 0 && rt < 1) {
               const decay = 1 - rt;
@@ -7439,7 +8121,7 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
           <div className="mc-pop absolute top-2 left-2 max-w-[76%] rounded-[18px] bg-white/95 p-2.5 shadow-lg sm:max-w-[320px]">
             <div className="flex items-center gap-2">
               <span className="text-xl" aria-hidden>
-                {mission.kind === "color" ? "🎨" : mission.kind === "count" ? "🔢" : mission.kind === "riddle" ? "🤔" : "🎯"}
+                {mission.kind === "color" ? "🎨" : mission.kind === "count" ? "🔢" : mission.kind === "riddle" ? "🤔" : mission.kind === "trail" ? "👣" : mission.kind === "twin" ? "👯" : mission.kind === "basket" ? "🧺" : "🎯"}
               </span>
               <span className="font-display text-xs font-extrabold text-[var(--dim)]">
                 NHIỆM VỤ MỚI {missionIndex + 1}/{missions.length} · ⭐ {foundCount}
@@ -7469,10 +8151,16 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 />
               )}
               <div className="min-w-0">
-                <p className="font-display text-lg leading-tight font-extrabold">
-                  {mText.enTitle}
+                {/* ĐỢT 6: câu lệnh TIẾNG VIỆT chữ lớn là nội dung chính;
+                    tên tiếng Anh chỉ hiện thành dòng nhỏ khi gợi ý cấp 2 bật. */}
+                <p className="font-display text-xl leading-tight font-extrabold">
+                  {mText.viTitle}
                 </p>
-                <p className="text-[13px] leading-tight font-bold text-[var(--dim)]">{mText.viTitle}</p>
+                {hintActive && mText.enHint && (
+                  <p className="mc-pop text-[13px] leading-tight font-bold text-[#2b7bb9]" role="status">
+                    🇬🇧 {mText.enHint}
+                  </p>
+                )}
               </div>
             </div>
             {mission.kind === "count" && (
@@ -7485,11 +8173,30 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 {mission.need})
               </p>
             )}
+            {mission.kind === "twin" && (
+              <p
+                className="font-display mt-1 text-sm font-extrabold text-[var(--mint)]"
+                aria-label={`Đã tìm ${twinTapped} trên 2 bạn sinh đôi`}
+              >
+                Đã tìm: {"⭐".repeat(twinTapped)}
+                {"☆".repeat(Math.max(0, 2 - twinTapped))} ({twinTapped}/2)
+              </p>
+            )}
+            {mission.kind === "basket" && (
+              <p
+                className="font-display mt-1 text-sm font-extrabold text-[var(--mint)]"
+                aria-label={`Đã bỏ vào giỏ ${basketCount} trên ${mission.need} bạn`}
+              >
+                Trong giỏ: {"🧺".repeat(basketCount)}
+                {"☆".repeat(Math.max(0, mission.need - basketCount))} ({basketCount}/
+                {mission.need})
+              </p>
+            )}
             <div className="mt-1.5 flex gap-1.5">
               <button
                 type="button"
                 onClick={speakMission}
-                aria-label={`Nghe lại nhiệm vụ: ${mText.viTitle} — ${mText.enTitle}`}
+                aria-label={`Nghe lại nhiệm vụ: ${mText.viTitle}`}
                 className="font-display flex-1 rounded-full bg-[var(--sun)] px-3 py-1.5 text-[13px] font-extrabold shadow active:scale-95"
               >
                 🔊 Nghe lại nhiệm vụ
@@ -7517,6 +8224,16 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 🤔 Nghe câu đố, suy nghĩ rồi đi tìm bạn đó nhé! Bấm 🔊 để nghe lại câu đố.
               </p>
             )}
+            {mission.kind === "trail" && !hintActive && (
+              <p className="font-display mt-1.5 rounded-xl bg-[#FFF7DB] px-2.5 py-1.5 text-[13px] font-extrabold" role="status">
+                👣 Cứ bước theo dấu chân vàng trên mặt đất — dấu mới sẽ hiện ra khi con tới gần nhé!
+              </p>
+            )}
+            {mission.kind === "basket" && !hintActive && (
+              <p className="font-display mt-1.5 rounded-xl bg-[#E7F8F3] px-2.5 py-1.5 text-[13px] font-extrabold" role="status">
+                🧺 Chiếc giỏ ở gần chỗ bắt đầu xuất phát. Bấm vào vật đúng là vật bay vào giỏ!
+              </p>
+            )}
           </div>
         )}
         {!finished && mission && mText && !missionPanelBig && (
@@ -7527,7 +8244,7 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 setMissionPanelBig(true);
                 window.setTimeout(() => setMissionPanelBig(false), 3000);
               }}
-              aria-label={`Xem nhiệm vụ ${missionIndex + 1} trên ${missions.length}: ${mText.viTitle} — ${mText.enTitle}`}
+              aria-label={`Xem nhiệm vụ ${missionIndex + 1} trên ${missions.length}: ${mText.viTitle}`}
               className="flex min-w-0 flex-1 items-center gap-1.5 text-left active:scale-[0.99]"
             >
               <span className="font-display shrink-0 text-xs font-extrabold text-[var(--dim)]">
@@ -7542,10 +8259,18 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
                 />
               )}
               <span className="font-display truncate text-[13px] font-extrabold">
-                {mText.enTitle}
-                <span className="font-bold text-[var(--dim)]"> · {mText.viTitle}</span>
+                {mText.viTitle}
                 {mission.kind === "count" ? (
                   <span className="text-[var(--mint)]"> · {countTapped}/{mission.need} ⭐</span>
+                ) : null}
+                {mission.kind === "twin" ? (
+                  <span className="text-[var(--mint)]"> · {twinTapped}/2 ⭐</span>
+                ) : null}
+                {mission.kind === "basket" ? (
+                  <span className="text-[var(--mint)]"> · 🧺 {basketCount}/{mission.need}</span>
+                ) : null}
+                {hintActive && mText.enHint ? (
+                  <span className="font-bold text-[#2b7bb9]"> · 🇬🇧 {mText.enHint}</span>
                 ) : null}
               </span>
             </button>
@@ -7557,7 +8282,7 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
             <button
               type="button"
               onClick={speakMission}
-              aria-label={`Nghe lại nhiệm vụ: ${mText.viTitle} — ${mText.enTitle}`}
+              aria-label={`Nghe lại nhiệm vụ: ${mText.viTitle}`}
               className="font-display flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--sun)] text-base shadow active:scale-90"
             >
               🔊
@@ -7826,10 +8551,13 @@ export function ExploreGame({ onBack }: { onBack: () => void }) {
         👁️ Camera đi theo sau vai như mắt bé nhìn: ↑ đi tới, ↓ đi lui, ← → rẽ
         trái/phải (xoay êm chậm rãi) · ⌨️ Dùng 4 phím mũi tên hoặc 📱 bấm giữ 4 nút
         mũi tên ở góc phải · ⭐ Tên của bé luôn hiện trên đầu nhân vật · 🔊 Mỗi
-        nhiệm vụ mới cô tự đọc tiếng Việt cho bé nghe · 🧭 Mũi tên vàng chỉ đường
-        tới vật cần tìm · 🖱️ Bấm vào đồ vật: vật sẽ NHẢY, RUNG, CHẠY… phản ứng
-        vui, hiện thẻ từ và luyện nói theo cô · 🏁 Xong 7 nhiệm vụ là đi tiếp
-        sang nơi mới đẹp hơn!
+        nhiệm vụ mới cô đọc lệnh BẰNG TIẾNG VIỆT cho bé nghe · 🏷️ Mỗi bạn đều có
+        BẢNG HIỆU ghi tên tiếng Anh ngay bên cạnh — tìm đúng bạn rồi đọc bảng
+        hiệu là học được từ mới · 🧭 Mũi tên vàng chỉ đường tới vật cần tìm
+        (riêng nhiệm vụ 👣 thì đi theo dấu chân phát sáng) · 👯 Có nhiệm vụ tìm
+        bạn sinh đôi và 🧺 bỏ đồ vào giỏ · 🖱️ Bấm vào đồ vật: vật sẽ NHẢY, RUNG,
+        CHẠY… phản ứng vui, hiện thẻ từ và luyện nói theo cô · 🏁 Xong 7 nhiệm
+        vụ là đi tiếp sang nơi mới đẹp hơn!
       </p>
     </main>
   );
@@ -20089,489 +20817,4 @@ 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
-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
-Uuq//6lK0zqUzlKKlKwiZBIz///////vVv/tK+iCRlA15VyaF7PxdzBKKB1MQU1FMy4xMDBVVVVV
-VVVVVVVVlYAuxOWySCDYOx6wtf/zhMSZHkNiyl/MKAKhKte0UV0NVSleuND9ULCcqhZYv3t7Ej71
-M2mwEDGVfN9TLewlVfNB9cnGonxmOMqn5RSNhQpmAh88z6QVf//5n5XVmP+Oq4oUcSOSpwWDuyQd
-KJPC4bR//av62DSu0inqtnv8lJaFTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUH4gyOJyNtaP/zhMTAHOJeiZ54zR6ZOTEc
-y2rcvYSdmjxZ3tfCjW3LU5FIoBDscuteFmpCiRNysRz2/afPS4E6n1323qovkcNMrKPRSz51cP/+
-2SeTgEM5ykptKStknxQWZiKW4ySU3O2hE+3WEqE9ppyu0dd03jUr96uZTEFNRTMuMTAwVVVVVVVV
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUKSXW7/f/bWEABUIVCBsBiI0z4
-dbZRjP/zhMS7G8Iabb55ht6kUlWzbucx9NUYgiafi02HIJqvOUy8LPhBeOW+4/wr6QA0vVY+9ONM
-OKSJ5o7qQ1MVrkV/BCS31NVpfqqqKJPhw2qtE5Ta3LO9FA0PRWSMqMuoJA62Q1XR7rnqi5Fj6xcs
-3MVrR1vrTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVEksl3//zhMTKH4KOYl5Jhrz999rYXAWiGK+4HfGBDlKqk+ps
-GZNdf0faelTApEs2ezKusI7aMN+3jtZ+L8HHM7+W7M8kHzfGFXn5vSRBIRUg4POmn6igjCTkCFMy
-NZH49rW8O5rsA6IvgcZQZpbMjr/XK9Vwq73qTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUJONtyS2T/4Cv27PKFCgbi1fvE4Phkef/zhMS3GsGmZl5g
-jDgTWsfGd6w2N7Ys1HWNT5v5a08IfvJftgVJ3JKWkwcUI5yAcgrSGwx3zuz3hx8e2+1WM+hMI5+/
-h6z+e+6/z9/67b7///zt3bov8kKPDHYoTiZmacZNPeKXKmR0rpwXOVr9aoT9bVtVAGVXCtcSaTYg
-IVnIHF5QF0C1kObi7YgCOBIXuYquWDTjNM4arT2701GAJQPRKAAG3n3cUx7iKjTERDgDAUT1OX5R
-RPGrGle6GRgQ5P/zhMTKH1Jaal1PMAIAgMuQAmJBy/fJfL5c4kNo+Msgt5yFCBSwcRGmJjyYwMq4
-/ugmrC93cvS2+9VIYNQERTKgywLAIIeIDw3PDLWrGr9i7dzyrRSZr2zJj07gMuInhnyIoNFj5ggB
-dz+4f3X/jvPn/j2kqbzyx71W+TtusI6bEXXchTJPFa8r5Y5e5rCv+f4fzLK5OWN7y3nvmNe9rucG
-OikSX7WImcpSl2r9AQswiCJXqCLqY7rXNa1nY/WE///zhMT/S+w6PZuZ0ADvvL/75Ux+x+X4/nup
-h/OY/9/976mHTtchtbqsa6GQPy46A9Gx5VLHxhdNGLCwkIliFpTVlIx2s3Bir4xTRQwvrKXGj32V
-yHSwm6uNt3crK6EbJGJBnFcoUOJYUXA3Mmvu4avFIZmVv/2ms7nxbVW995c/x6+N7+fzmekk3EJI
-XBU60B3NeNIHAHJQfDBBjccRWvxZqBOtEsQNC3egSvKkohKkgM+FDe0cOw6uKgrHB1RaCP/zhMSC
-IDGudj3PMABLnOLp2m7x2DyiPKyIunBkyk9ekyzQlulosClIcCLrg8BUP60+VldWjKLMCAsQTIGz
-u9iJWQahhW7n/azybAhx/+f9qx1TvbdQaf2YlRB+kauP3+4//K3/zrPOJUhMbjf415hYuIfhQWDr
-gOOfED2jxewakx68vjBoq0ex1TD4nCrqlqyQVMLFC9VMQU1FMy4xMDBVVVVVVVVVVVVVAJiKVLKU
-ixBMK+ZXGoFmYFiFXM4ID//zhMS0IopKVKjLDDzLS3NMTla6yWSmvO3V56XgZFJHC4liZSnq2357
-sNK4trHWqqzsdLkBiiNGR71mbXoZl+6IcIDKQcvKvqhlat/Wh5WKrK0z5W/9iuqhQ0nmx6caKuIr
-+Qavnj7Y0bCkCuY/uFxT3GXKTEFNRTMuMTAGhXvVKFgM7g1HlnAWDExo7biJaJgoD4ElZfXoS63E
-kvD+eFpuxJiOicPwEUjMLFz3/19ttWlAgclmWwVVhgcmmjDTKf/zhMTJHxqaWVzDBHyDkSHBySIR
-+Qd3zmtFBQTu0F5aDybPTGWVh7SusWv01ZM0/GyxdDLYfXLMaiD6Xtn3vqEjxlbNcNErjechaXn6
-t3fzBJ7f9zUzrBxzL/cTXUJdX7TURVykS166ZOUrVF8z+8UlWRwaTEFNRTMuMTAwqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqEVm/+m23
-uv/zhMT3KqQyPXTbEF3qRgACqYBIfKH/YVGiY+WwidZusFlQbcEIcCGEzpKTwSSmrUbFkRxwQtGY
-EIcKbwtN7TEE/revK9T1hn5bhEOBEuICaxZ2b2rFl0CxGsn2Na9f/G4uW71OG8Bn60ijh1UwOb03
-uTYuTEFNRTMuMTAwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqhJJJbbZLZJIpv/zhMS6G3Gaal57BhQ9rowfzCum9CTQlESt4wrf+yTjDZRd
-LMROnvJy1k1DKfhxokQEHQ2ITsZTKbSO8F/wKGMjg4cR9IiHsfGAqOmEyYw5NShwY1WKXqbanaix
-OP3X3D579gowy2rQxvQhwedTHW9g00VqTEFNRTMuMTAwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqEltt13uuusklIC8YJCZShZtQmWiMbt4zbv/zhMS8G9HGel55hl7D
-t9claZuY+N+4ukfCJdhX+wfZ6I3ysqGpt9uziUlkS53YZvfibbIZn7lOpezbosITsQhwGRVEY0YL
-iUeHD4gDwmBt8SAM0WGvF1CiFgUvY+RUJzpPTe6ytBpV+Jx54rHXlhG9/2G6TEFNRTMuMTAwqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqov+SaWWVxtREGQ
-o3Zc10pbFP/zhMTMH+GuXl7CTCitg8EMUr4eohmVyBDIkx8csKJnHlk9C+o5LUgbWXDUTCFEbmFT
-luPvU4yQd+xiEMaQ76YtWKOypbnWp9fKTuUunzhQ7n+ZsCWmwuceCLjVw1yrdoSJHhZfQbuzxE2F
-FUakq0XHvTz1TEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-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
-KDrP4bWbfPOsTHGLtIwwu1WTkgpaRYlZ1IuRJLNpIxJKK3N3tjJ5zjTWyN2rx8O2ndullPlem7yx
-11nlnhg491r+bNBhXb9nQqHt9cpmoP4GQXe+WaFe4TaAmyhsVWEwyKubOHu2Ve3pCKoF7ABujDRo
-BglczVITRplhXf/zhMSEHIqaab4ZhP69YywVQpBhThhVARgIVQrUSUY9Wqw1JjZtSjVaMBOAkzVt
-e7GprqTNV1JjpT4eqxgZ5qvG4xqXtRQMTGOqzOJgEa//NdjjGv7NGOiSZqc1Lb//KMbARqpMexqU
-//6TetL+NVNUNZ/w1WNef/9YwsFCskxBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqv/zhMTEIIQqFZYwRkWqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqg==
-===== END BINARY FILE: client/src/assets/audio/mop.mp3 =====
-
-===== BINARY FILE (BASE64): client/src/assets/audio/mops.mp3 =====
------ sha256: 80b8b200d4d591775a212f776e446f2c7b645e7a524205308f25181e0a2fe886 | bytes: 10213 -----
-SUQzAwAAAAAAG0NPTU0AAAARAAAAZW5nAEFJIEdlbmVyYXRlZP/zhMQAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AP/zhMQAAAADSAAAAABMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-VVVVTEFNRVVVVQCAQUGRQIAgGP/uB3RFpf/lgDJoM/+fgkY2hubnDQCEAtAbj80Xg2JCxcgAsf7M
-t0RQYYHEbBiT9PZbha0FzAy4nsQTHP/zhMRMAAADSAFAAACP6f4sQsgzHAswJP/23febkQJtyfOE
-4XP//bZnaibmaSyoTZExlyaJww///bf7+Yk+ZkYOAlCdIOsoEEHIIqOMul7///7qtbY0T9vjgMkU
-ybKRUGYKI4xyyHDgJotE+XCKGhODHjJq8pclUl1tkYgkMgkDDsIIhGB2p2P07nvtLIco+Wp6Vzlu
-aoItLpPLjeTaMsmRtGbSOk6nsuqokuUI2iRWbcytstLSfq0nySg807E72P/zhMT4Ktw6JN+ZiAB9
-W7pvKH0ahUicXajBleCUW9uWORygvtKVKcVjLSsGavNvPZJJBST9+RtZExPMO3m5KTUmsjkYFU/9
-lv+1KWxnuXnrd6sqhWRu6/jP9mqzy3fkcy7q6pa9qW7icEn3jtAgk35dys3InNBzaGqANOA8WWIm
-Mkkm4yRiCmL9uSgBTFiFtEVIRKRPSt0yEhbTsUpzXWm0niMkExOcQADifORjizrDxkjREeCfkPCZ
-E5fTNW6R6v/zhMT/LdPCTb/ZSAEYZuYYSpIkVRRdykaVUlnE7OZN27Opow7ovTbnaibm6UTNJH0W
-/rw2rI2BRTwefa/La2yf4Qhn1/WgA55ae2ZGuVFttnp+Wanaasvs9uxI3ftJaiUjJqV956+P3SZA
-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
-2zhIWcYHlIZ54xBB2W3/kShwZlcsrw+Ui/Sfk5UmNjP5CVVlNaXrSZuoQpvOeaXxRd1QrrzcQ8Mq
-FAiFCMuBwnQN8vFx3He6NU2dWEMsdUoInwvrUlmH05OcJJ0jSpWobQnNELGzFeVB5JqphhyVpgZK
-Bkn+pH3KOTE0yiLBlKxh8klIPf/zhMTuKFQqOZzKRt20JZ9Y3CpQRoFGDMlKYS3xdKdxqSTsZpkl
-jux+1pV0/TvCU2p3GloESbRFCH9dO329dzCVXy2Q1AiDQKlA8ByE8JGzE8RQOEODqOLzBmc7zact
-4PlsF04Pvet0t7ek2VdWws0V9Htm1Fl+QedRy1KyGFSvJKpMIoUhYTSfXRlYVyActCtXECMVgu9Z
-hiIzx82NDRxheDCe+mMi5DvPokaIuzFJZEmNI01jbSi7Sm8o8sTCgf/zhMT/Mfw6ICjbEpxfK+OT
-1E5chAI5SlWKEVlj87qR4sQ96TQ7FXkYRHYybJcnPpIrG2OZlmqh49+v04g26jnuPofA++ooVkdP
-iEWwlQQxUUEr0yDZGVvViZbq/jmDHon7iv60pJ4vjvGAT1oVUTeQ3DQMja5mXHR1TEFNRTMuMTAw
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVDjsltmskjbaGAZedLUxXPS0wqWj6V1sULP//7dmjT/uWe3J/
-nvrEN//zhMTqKOOiLPDKUH3RpVkhoFy9hR7kpDpupv8+ptIavt+m3Za9zmzTvt/d6j5t3mX2vjxw
-wwsHYn6Hg0vyLTCRlyx/bWLW85w146Sf7GtJS2UETkKdUYLPkAzf3r8fHn8fxvslXP2z6Xlku9WS
-6t97QVBqTEFNRTMuMTAwqqqqqqqqqqqqqqqqqqqqqqqqBXjcckrccZIKQWg1NrlWZhY7hvXWZIkS
-Oy1ftXeZk0jBJLJmTcY6nYklvrTao4kSJP/zhMTbI6r2Tl5hhx0CCqeWJEiW/1vY7QUiadszMkVF
-byjmtVVrVV8oWGAqAWEZrWNhY79mamb+LW1hmbhq21prhYZmZmZa9VVYVVVai9RVYZmZpVVWlWWF
-m5WoaoZuSTYU0FBQUl/guQrE0KO8KCnxf4NqTEFNRTMuMTAwqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqv/zhMTkJdOOLb5B
-kN2qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqqqqqqg==
-===== END BINARY FILE: client/src/assets/audio/mops.mp3 =====
-
-===== BINARY FILE (BASE64): client/src/assets/audio/mother.mp3 =====
------ sha256: f87eeffa83415eae1b16184c7e55c44d2b984589f14a007ae9966f40e0e8ce67 | bytes: 10981 -----
-SUQzAwAAAAAAG0NPTU0AAAARAAAAZW5nAEFJIEdlbmVyYXRlZP/zhMQAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AP/zhMQAAAADSAAAAABMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-VVVVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-VVVVVVVVVVVVVVVVVVVVVVVVVVUOhf/zhMRMAAADSAFAAABDodCoWDw1EotEgc0IHqQAUO4dIRm0
-kC/21GAse/KCWDWMf74EYFAQxKIv/c/ESIcLwFYqFv5hlswWGdrt/9/0MRrIZ//2/3u35jH/////
-0Pvmf8z///2+3/b9j5OQMZnmMYpPdBOqlpWAlm/quoA5FSY4GgT0YLA5tofmDgCYAE5gULLsFAQs
-OjuDgUwGkUFJggmqTpyW0er196rWIHMF8jV0nX5kLTtKSwRFwF06VwxJOP/zhMS1Ggwihl+TUEOs
-btkJkZRpmGgBXDoNgcKEq9Cg51SlhbA/Q4S4IWaQwkLLYoWNRLpaSaigFgfqUYbKhiOb1LMhCMRq
-9BVqNy2rs112l1Qdhb1Qpz3OReIUq3K6uY0ChsLXip6I9ewbLrUt643EzSN8aZr7Vih0/Tu7yRoT
-tkhM1m+ekVTNr1w1mOzO8UjMLND31OyR/bV4zc3PbTwWLv4294fPob1cuLE1Tta/MnoN8OUa9Gd5
-Xce6nYmWrP/zhMT/RyQ6JZOceAB5WIE06odQoEsymgsmo+nsV8+7Fl4+gzRGPWnjnGoK263aS2W2
-RjQU7Qh0dyU7a4uMkdxrKqn0eBiutU2/gnBai+vYjt5iT9ShzCoj54ml5OGRkM+U8RLFFfCu7fGz
-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
-VVVVVVVVVVVVVVVCJ1yQqbbfXSZi4Q5Dx9MJGoD58rdLo8m1V//zhMTGHkwaob56Cp/2u5dIJxw+
-1h0mtsmn4mR+/mvhSKJROaqmLw7f7/zmJ/W8mYo445kVpO7nOUcKGCywHSZtv5PowkJa/P7WuLJZ
-E1W+kraE9P+/yeq1d/7+j/1/Q2Y6zi5SdPRpyGdrjSlFlFQVECy6TEFNRTMuMTAwVVVVVVVVVVVV
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVAAMoHJbrJQObGkQhsy8mAya1Hbs6xMBzE9O1WQ3nYWuKyV9n
-sf/zhMTNIEQapl55ivdizZ/rjNWGLFtEHGWA/3ioTrfqtHOF1Fw6MYbNRTGOXO2mj+fmZXRHF1CZ
-w0VKqnv6UfcxB5kZnpdjm/qkRuiv/TejK1X36122ynvMqfX6vdL+Se7iSIq0mEXpVv+rMooH0l0e
-SWlVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVdploBjk
-kbIAcqK6ogOC4jq6JBajLkGkYmBF6f/zhMTYItQCah7Dyn2eLTqBdRpFNyVZlx2VylXQBoLqvS10
-p40THOcZ/JqWNTaiObMOfsis80fAwcQseSod/rOY1DSRNEohrm0/ecYpRzWq1bsY/oczJfnrPu8/
-Z+Vu6yMA3UBARg8h6Wm1Ql9jQ7WkVWFVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVgEQmQN6Ta
-ujkCCLbOSGyxHjr76j/auVt2RW0am5pVz2WCGC0WV1jiFN7hlXHPDRGJAv/zhMTOIGMGdZ56VJqk
-ETRSRuJqyVYmlSHPv/yCqZpYrup5l/xvN74bm3WasiJFccpuev9r++UcjPzydJXrJQn7tYKXuVPI
-5TXuNAMvmfv2H2hyELb+rr5+V/k5Z3K/9ucMtf/I24INxP+aLzViEeOdzOgITEFNRTMuMTAwVVVV
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVY8yJAnXtXIJAThbY1eyG84K
-1zZYd2tlSv/zhMTlJkP+Xl56Rv3HvbEKSytgXrY0j9SSzPZt+qcxAKkw9RLmrmgCjL/M/7b49Zi7
-3X81aLfx2f7LabQomQ1LXKfcr5X6wxiCzKFHCt5c5ly2WNT73f8Eyi+nFLiqkJvd8IXp4u0zAU40
-MIDYuiWYh2qVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQVU5ZnJ
-ZbJIWQsaWOhrlmjryeZlFNBlUNq6IscBHAwC0//zhMTLH8KGXb55hvzkv6gp8YgB2+awBNBZ+/H+
-mkZI6xt9rrDedJUc8ls5/2NEtUhTs97OYhXQ+q2cxHKcyOlDDOMZN3psiLNZLLv3TdkrWc84d61p
-fISqW2tR9jNIivyntPV766QTiSb+Hgg5Uw1bDgqqTEFNRTMuMTAwqqqqqqqqqqqqqqqqqqqqqqoN
-tx2a2S2xtvATXhmng+VbjNQStKSOKG2UOXCoyRxXjl8y2sge8romUQczB4qwPKV5Yf/zhMTUIcu2
-Vl55hLyYiCo3ikceXN7nCVckSkfD9WwtZIjhotEoYsF27lTLnzcNpSqtByPhWk4v1GYrDS8JyjVP
-SG3VR11FeRdVUJr30MPMLo5ofjWmm0eR39/5YX/N9/1OU+ztEMOcc2ynp6XSO/2cQzMVTEFNRTMu
-MTAwDGhtmAdU4xk5mcS+H5Rjl9NPXI/hKqlxR06XpnJHFTYVMIUjL3oC+4g8UnHiyz/860BMRc2E
-DEjTCqsWEYKDy0EDUf/zhMTlJjsKTl7CUF1Rou0Pp5UVaaowYWcMa1LKCokOIKkexhfP0I54r29s
-jr92840hV1lKpCBo2rszxVxwuMPMKlsX6WV22+Z4vup5nqSx5g9NZrX/hdp6maqofWmmTXiP5Rc1
-c5PTSujJuebhJRrJnEUqTEFNRTMuMTAwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-qqqqqqqqK/ctltckaTCHo/ydlwuUXjCwQ/b8fPlPSR6Iov/zhMT2KkwqLPTKUL021O2kUmJdWml6
-iasn9tniTQy0He7cGB8SHECky6DR/+ZE5pVo1ua93Gb2Kp/n7YVOr8zYoacojsp45KN0MwVc2p9P
-A7j+aIKPHHMXPu53/92nhV/s+/sf/1D18SWqPf//G+zumc5VTEFNRTMuMTAwBqSbn/tSOBJ1thj9
-j56Y5OTkJpdWECHEPkpadxJZSPwFLDe7dF2gocLHbEzkJhmujo1hQPipGU8lZ45XBxVGqqSYw//z
-hMTPIInaTb55jA1UeXSBTmGBoWnSKbZJcyIIpcxFi6ysSpmJs7eYzfEs8RMXKedr1DY56aT5t7Te
-PV6Svu7Q8dynLSuFw9Y74amjemPDU+PuG4k8M3Z69bj0cXHwvI/1qP3Ojmb22L3a5XTdVkVNINja
-TEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVRHbbdtrZbHIDoEiiBXz
-rK6pPC1RJHkdIp+bV7uWrT3uP//zhMT2KoP6NbTCTJ07602ZivSrLr8S4gg4kFuDUW4cQp4PHpkK
-GzxVGQEXCLPdHfhTzCMFFWRVNqudStqIKZEdTOaNNrvUUtydZ9djXUlTkGgyvEHCVb0eZ6mzN8M7
-333tdQ636+cRj627pYS+d9ZZKP7pBKAM2F3jymGNjtEJY
+UvIHxE2FQC0BqC4Wr2f6bGejRtx6TEFNRTMuMTAAgvqp+qXPw0NbgCEc6DAoaJcaAB519gwD
