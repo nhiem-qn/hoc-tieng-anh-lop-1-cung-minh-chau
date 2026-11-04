@@ -8,10 +8,17 @@ giọng cô ghi sẵn (209 file MP3), chấm điểm phát âm 0–100, trò ch�
 
 ## Cách dựng lại / sửa tiếp bằng bất kỳ tài khoản Muse nào
 
-Cách đơn giản và đầy đủ nhất — dùng file **`GOI-MA-NGUON.txt`** ở thư mục gốc của repo này:
+Cách đơn giản và đầy đủ nhất — dùng gói mã nguồn **`GOI-MA-NGUON`** ở thư mục gốc
+của repo này. Vì giới hạn dung lượng mỗi lần đẩy của kết nối GitHub, gói được
+chia thành 5 phần: `GOI-MA-NGUON.part01.txt` … `GOI-MA-NGUON.part05.txt`.
+Ghép 5 phần theo đúng thứ tự (nối liền nhau, không thêm/bớt ký tự) sẽ được file
+`GOI-MA-NGUON.txt` hoàn chỉnh — 6.198.096 byte, SHA-256:
+`0269daa5e34921c93d172f692c0dc20ea79da2071b9b8106e5b9561ac4af81e0`.
 
-1. Mở Muse bằng tài khoản của bạn, tải file `GOI-MA-NGUON.txt` lên cuộc trò chuyện.
-2. Gửi yêu cầu: **"Hãy dựng lại ứng dụng dựa theo mã nguồn trong file này."**
+1. Mở Muse bằng tài khoản của bạn, tải cả 5 file part lên cuộc trò chuyện
+   (hoặc gửi link repo này).
+2. Gửi yêu cầu: **"Hãy ghép 5 file GOI-MA-NGUON.part01–05.txt theo thứ tự thành
+   GOI-MA-NGUON.txt rồi dựng lại ứng dụng dựa theo mã nguồn trong file đó."**
 3. Muse sẽ tạo ứng dụng mới từ đúng mã nguồn này (file có mục lục SHA-256 để
    kiểm chứng từng file, gồm cả 209 file MP3 và hình WebP được mã hoá Base64).
 
@@ -21,8 +28,9 @@ Sau khi dựng xong, bạn có thể yêu cầu Muse ở tài khoản đó sửa
 ## Vì sao file MP3 / WebP không nằm trực tiếp trong cây thư mục?
 
 Repo này được đẩy lên qua kết nối GitHub của Muse, kênh này chỉ nhận file văn
-bản (UTF-8). Toàn bộ file nhị phân (209 MP3 giọng cô, 5 ảnh WebP, icon) nằm
-**nguyên vẹn trong `GOI-MA-NGUON.txt`** dưới dạng Base64 kèm SHA-256.
+bản (UTF-8) và giới hạn dung lượng mỗi lần đẩy. Toàn bộ file nhị phân (209 MP3
+giọng cô, 5 ảnh WebP, icon) nằm **nguyên vẹn trong gói `GOI-MA-NGUON`** (5 file
+part ở thư mục gốc, ghép lại theo hướng dẫn ở trên) dưới dạng Base64 kèm SHA-256.
 Cây thư mục trong repo là toàn bộ mã nguồn dạng chữ mới nhất để xem và sửa trực tiếp trên GitHub.
 
 ## Cấu trúc mã nguồn
