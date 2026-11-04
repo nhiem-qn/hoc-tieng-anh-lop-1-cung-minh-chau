@@ -1,0 +1,8 @@
+{
+  "runtime": "typescript",
+  "platformVersion": 26,
+  "entry": "client/dist/index.html",
+  "name": "Học Tiếng Anh Lớp 1 Cùng Minh Châu",
+  "slug": "hoc-tieng-anh-lop-1-cung-minh-chau",
+  "managedCronJobs": []
+}

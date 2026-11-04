@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+@import "tailwindcss";
+@import "tailwindcss-safe-area";
+
+@theme {
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 14px;
+  --text-sm--line-height: 20px;
+  --text-base: 16px;
+  --text-base--line-height: 24px;
+  --text-lg: 18px;
+  --text-lg--line-height: 28px;
+  --text-xl: 20px;
+  --text-xl--line-height: 28px;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 32px;
+  --text-3xl: 30px;
+  --text-3xl--line-height: 36px;
+  --text-4xl: 36px;
+  --text-4xl--line-height: 40px;
+  --text-5xl: 48px;
+  --text-5xl--line-height: 52px;
+  --font-display: "Baloo 2", "Nunito", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  --bg: #fff9f2;
+  --surface: #ffffff;
+  --text: #3d2c3f;
+  --dim: #8a7387;
+  --border: #f6dfd3;
+  --accent: #ff5d8f;
+  --sun: #ffc53d;
+  --mint: #2ec4b6;
+  --sky: #4cc9f0;
+  --radius: 20px;
+  --space-surface: var(--surface);
+  --space-surface-alt: #fff3e4;
+  --space-muted: var(--dim);
+  --space-border: var(--border);
+  --space-accent: var(--accent);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* ---- Kid animations ---- */
+@keyframes mc-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes mc-bounce-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes mc-wiggle {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes mc-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(7px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+@keyframes mc-confetti-fall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(720deg); opacity: 0.7; }
+}
+@keyframes mc-float-up {
+  0% { transform: translateY(16px) scale(0.6); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translateY(-46px) scale(1.15); opacity: 0; }
+}
+@keyframes mc-gift-shake {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-7deg) scale(1.05); }
+  40% { transform: rotate(7deg) scale(1.05); }
+  60% { transform: rotate(-5deg) scale(1.08); }
+  80% { transform: rotate(5deg) scale(1.08); }
+}
+@keyframes mc-sparkle-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.35); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes mc-star-burst {
+  0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+  55% { transform: scale(1.3) rotate(8deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.mc-pop { animation: mc-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.mc-bounce-soft { animation: mc-bounce-soft 2.2s ease-in-out infinite; }
+.mc-wiggle { animation: mc-wiggle 1.6s ease-in-out infinite; }
+.mc-shake { animation: mc-shake 0.45s ease-in-out; }
+.mc-gift-shake { animation: mc-gift-shake 0.9s ease-in-out 3; }
+.mc-sparkle-spin { animation: mc-sparkle-spin 2.4s linear infinite; display: inline-block; }
+.mc-star-burst { animation: mc-star-burst 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-bounce-soft, .mc-wiggle, .mc-gift-shake, .mc-sparkle-spin { animation: none; }
+}
